@@ -1,0 +1,423 @@
+// Variables
+$primary-green: #059669;
+$secondary-green: #10b981;
+$light-green: #34d399;
+$dark-green: #047857;
+$emerald: #0d9488;
+$gray-50: #f9fafb;
+$gray-200: #e5e7eb;
+$gray-300: #d1d5db;
+$gray-400: #9ca3af;
+$gray-600: #4b5563;
+$gray-700: #374151;
+$gray-800: #1f2937;
+$white: #ffffff;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin transition($property: all) {
+  transition: $property 0.3s ease;
+}
+
+// Main container
+.login-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #0d9488 100%);
+  @include flex-center;
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+
+  // Decorative circles
+  .decorative-circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    
+    &.circle-1 {
+      top: 5rem;
+      left: 2.5rem;
+      width: 16rem;
+      height: 16rem;
+      background-color: rgba(52, 211, 153, 0.2);
+    }
+    
+    &.circle-2 {
+      bottom: 5rem;
+      right: 2.5rem;
+      width: 24rem;
+      height: 24rem;
+      background-color: rgba(52, 211, 153, 0.2);
+    }
+    
+    &.circle-3 {
+      top: 50%;
+      left: 33%;
+      width: 12rem;
+      height: 12rem;
+      background-color: rgba(45, 212, 191, 0.1);
+      filter: blur(60px);
+    }
+  }
+}
+
+// Card
+.login-card {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 80rem;
+
+  .card-content {
+    background-color: $white;
+    border-radius: 1.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// Left Panel
+.left-panel {
+  background: linear-gradient(135deg, $primary-green 0%, $dark-green 100%);
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+
+  // Decorative elements
+  .panel-decoration {
+    position: absolute;
+    
+    &.decoration-1 {
+      top: 2.5rem;
+      right: 2.5rem;
+      width: 8rem;
+      height: 8rem;
+      border: 4px solid rgba(52, 211, 153, 0.3);
+      border-radius: 50%;
+    }
+    
+    &.decoration-2 {
+      bottom: 5rem;
+      left: 2.5rem;
+      width: 6rem;
+      height: 6rem;
+      border: 4px solid rgba(52, 211, 153, 0.2);
+      border-radius: 50%;
+    }
+    
+    &.decoration-3 {
+      top: 50%;
+      left: 25%;
+      width: 4rem;
+      height: 4rem;
+      background-color: rgba(52, 211, 153, 0.1);
+      border-radius: 0.5rem;
+      transform: rotate(45deg);
+    }
+  }
+
+  .panel-header {
+    position: relative;
+    z-index: 10;
+  }
+
+  // Logo
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+
+    .logo-icon {
+      width: 4rem;
+      height: 4rem;
+      background-color: $white;
+      border-radius: 1rem;
+      @include flex-center;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+      .leaf-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        color: $primary-green;
+      }
+    }
+
+    .logo-text {
+      .app-name {
+        font-size: 1.875rem;
+        font-weight: 700;
+        color: $white;
+        margin: 0;
+        line-height: 1.2;
+      }
+
+      .app-subtitle {
+        font-size: 0.875rem;
+        color: rgba(167, 243, 208, 1);
+        margin: 0;
+      }
+    }
+  }
+
+  .panel-info {
+    margin-top: 1.5rem;
+
+    .panel-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: $white;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .panel-description {
+      font-size: 1.125rem;
+      color: rgba(209, 250, 229, 1);
+      line-height: 1.6;
+    }
+  }
+
+  // Footer
+  .panel-footer {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .truck-icon-container {
+      width: 5rem;
+      height: 5rem;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 1rem;
+      @include flex-center;
+      backdrop-filter: blur(10px);
+
+      .truck-icon {
+        width: 3rem;
+        height: 3rem;
+        color: $white;
+      }
+    }
+
+    .truck-info {
+      color: $white;
+
+      .truck-title {
+        font-weight: 600;
+        margin: 0 0 0.25rem 0;
+      }
+
+      .truck-subtitle {
+        font-size: 0.875rem;
+        color: rgba(167, 243, 208, 1);
+        margin: 0;
+      }
+    }
+  }
+}
+
+// Right Panel
+.right-panel {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: $gray-50;
+
+  .form-header {
+    margin-bottom: 2rem;
+
+    .form-title {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: $gray-800;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .form-subtitle {
+      color: $gray-600;
+      margin: 0;
+    }
+  }
+
+  .form-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  // Input groups
+  .input-group {
+    .input-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: $gray-700;
+      margin-bottom: 0.5rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+
+      .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+
+        .icon {
+          width: 1.25rem;
+          height: 1.25rem;
+          color: $gray-400;
+        }
+      }
+
+      .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        border: 2px solid $gray-200;
+        border-radius: 0.75rem;
+        background-color: $white;
+        color: $gray-800;
+        font-size: 1rem;
+        @include transition(border-color);
+
+        &:focus {
+          outline: none;
+          border-color: $secondary-green;
+        }
+
+        &::placeholder {
+          color: $gray-400;
+        }
+      }
+    }
+  }
+
+  // Form options
+  .form-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      .checkbox-input {
+        width: 1rem;
+        height: 1rem;
+        border: 1px solid $gray-300;
+        border-radius: 0.25rem;
+        cursor: pointer;
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+      }
+
+      .checkbox-text {
+        margin-left: 0.5rem;
+        font-size: 0.875rem;
+        color: $gray-600;
+      }
+    }
+
+    .forgot-password {
+      font-size: 0.875rem;
+      color: $primary-green;
+      font-weight: 500;
+      background: none;
+      border: none;
+      cursor: pointer;
+      @include transition(color);
+
+      &:hover {
+        color: $dark-green;
+      }
+    }
+  }
+
+  // Login button
+  .login-button {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(90deg, $primary-green 0%, $dark-green 100%);
+    color: $white;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    @include transition;
+
+    &:hover {
+      background: linear-gradient(90deg, $dark-green 0%, #065f46 100%);
+      transform: scale(1.02);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  // Footer
+  .form-footer {
+    margin-top: 2rem;
+    text-align: center;
+
+    .register-text {
+      font-size: 0.875rem;
+      color: $gray-600;
+      margin: 0;
+
+      .register-link {
+        color: $primary-green;
+        font-weight: 600;
+        background: none;
+        border: none;
+        cursor: pointer;
+        @include transition(color);
+
+        &:hover {
+          color: $dark-green;
+        }
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .left-panel {
+    padding: 2rem;
+    
+    .panel-info .panel-title {
+      font-size: 1.75rem;
+    }
+  }
+
+  .right-panel {
+    padding: 2rem;
+  }
+}
