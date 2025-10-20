@@ -2,9 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-// Importa tus componentes reutilizables
-import { Header } from '../../components/header/header';
-import { Footer } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-login',
