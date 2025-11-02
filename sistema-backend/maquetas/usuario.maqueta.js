@@ -1,0 +1,1 @@
+// Defube ka tabka 'usuario' para Sequelize/TypeORM
