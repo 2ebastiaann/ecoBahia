@@ -1,7 +1,8 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
-import { routes } from './Frontend/app.routes';
+import { routes } from './proyectoDesarrollo2/Frontend/app.routes';
+
 
 
 export const appConfig: ApplicationConfig = {
