@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -30,17 +29,24 @@ export class Login {
     }
 
     // Aquí conectarás tu lógica de autenticación
-    // Ejemplo:
-    // this.authService.login(this.username, this.password).subscribe({
+    alert(`Bienvenido, ${this.username}!`);
+  }
+
+  handleGoogleLogin(): void {
+    console.log('Inicio de sesión con Google');
+    
+    // Aquí integrarás Google OAuth
+    // Ejemplo con Angular Google Sign-In:
+    // this.authService.signInWithGoogle().subscribe({
     //   next: (response) => {
     //     this.router.navigate(['/dashboard']);
     //   },
     //   error: (error) => {
-    //     console.error('Error de autenticación:', error);
+    //     console.error('Error con Google:', error);
     //   }
     // });
 
-    alert(`Bienvenido, ${this.username}!`);
+    alert('Redirigiendo a Google...');
   }
 
   handleKeyPress(event: KeyboardEvent): void {
