@@ -28,12 +28,12 @@ jobs:
           cd frontend
           npm run build --prod
 
-      - name: Crear carpeta pública si no existe
-        run: mkdir -p ~/public_html/
+      - name: Crear carpeta pública en la raíz web si no existe
+        run: sudo mkdir -p /var/www/html/jorge_sotelo/
 
-      - name: Limpiar carpeta pública
-        run: rm -rf ~/public_html/*
+      - name: Copiar archivos compilados al directorio web
+        run: sudo cp -r frontend/dist/ecoBahia/* /var/www/html/jorge_sotelo/
 
-      - name: Copiar archivos compilados al directorio público
-        run: cp -r frontend/dist/ecoBahia/* ~/public_html/
+      - name: Ajustar permisos de la carpeta web
+        run: sudo chown -R www-data:www-data /var/www/html/jorge_sotelo/ && sudo chmod -R 755 /var/www/html/jorge_sotelo/
 
