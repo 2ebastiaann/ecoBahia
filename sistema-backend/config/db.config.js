@@ -3,9 +3,9 @@ const { Sequelize } = require('sequelize');
 
 // Configuración de variables de entorno
 const HOST = process.env.DB_HOST || 'localhost';
-const USER = process.env.DB_USER || 'user';
-const PASSWORD = process.env.DB_PASSWORD || 'password';
-const DB = process.env.DB_NAME || 'EcoBahiaDB';
+const USER = process.env.DB_USER || 'postgres';
+const PASSWORD = process.env.DB_PASSWORD || 'Jack#_45279*2724';
+const DB = process.env.DB_NAME || 'db_app_EcoBahia';
 const PORT_DB = process.env.DB_PORT || 5432;
 
 // Crear instancia de Sequelize
