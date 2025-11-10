@@ -1,0 +1,39 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v3
+
+      - name: Instalar Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Instalar dependencias
+        run: |
+          cd frontend
+          npm install
+
+      - name: Compilar proyecto Angular
+        run: |
+          cd frontend
+          npm run build --prod
+
+      - name: Crear carpeta pública en la raíz web si no existe
+        run: sudo mkdir -p /var/www/html/jorge_sotelo/
+
+      - name: Copiar archivos compilados al directorio web
+        run: sudo cp -r frontend/dist/ecoBahia/* /var/www/html/jorge_sotelo/
+
+      - name: Ajustar permisos de la carpeta web
+        run: sudo chown -R www-data:www-data /var/www/html/jorge_sotelo/ && sudo chmod -R 755 /var/www/html/jorge_sotelo/
+
