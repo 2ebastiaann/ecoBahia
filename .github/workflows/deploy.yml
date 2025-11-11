@@ -28,11 +28,11 @@ jobs:
           cd frontend
           npm run build --prod
 
-      - name: Copiar archivos compilados al directorio web
-        run: sudo cp -r frontend/dist/ecoBahia/* /var/www/html/jorge_sotelo/
+      - name: Copiar archivos compilados al directorio del servidor
+        run: |
+          rm -rf /var/www/jorge_site/*
+          cp -r frontend/dist/ecoBahia/* /var/www/jorge_site/
 
-      - name: Ajustar permisos de la carpeta web
-        run: sudo chown -R www-data:www-data /var/www/html/jorge_sotelo/ && sudo chmod -R 755 /var/www/html/jorge_sotelo/
 
 
 
