@@ -10,27 +10,43 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      # 1️⃣ Clona el repositorio
       - name: Clonar repositorio
         uses: actions/checkout@v3
 
+      # 2️⃣ Instala Node.js
       - name: Instalar Node
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
+      # 3️⃣ Instala dependencias del proyecto Angular
       - name: Instalar dependencias
         run: |
           cd frontend
           npm install
 
+      # 4️⃣ Compila el proyecto Angular
       - name: Compilar proyecto Angular
         run: |
           cd frontend
           npm run build --prod
 
-      # Ya no intentamos crear la carpeta ni usar sudo
+      # 5️⃣ Limpia el contenido viejo
+      - name: Limpiar carpeta del servidor
+        run: |
+          rm -rf /var/www/html/jorge_sotelo/*
+
+      # 6️⃣ Copia los archivos compilados al servidor
       - name: Copiar archivos compilados a la carpeta del servidor
         run: |
           cp -r frontend/dist/ecoBahia/* /var/www/html/jorge_sotelo/
+
+      # 7️⃣ Ajustar permisos de la carpeta 
+      - name: Ajustar permisos de la carpeta web
+        run: |
+          chown -R jorge_sotelo:www-data /var/www/html/jorge_sotelo/ || true
+          chmod -R 775 /var/www/html/jorge_sotelo/ || true
+
 
 
