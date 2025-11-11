@@ -29,10 +29,11 @@ jobs:
           npm run build --prod
 
       - name: Copiar archivos compilados al directorio web
-        run: cp -r frontend/dist/ecoBahia/browser/* /var/www/html/jorge_sotelo/
+        run: cp -r frontend/dist/ecoBahia/browser/* /var/www/jorge_site/
 
       - name: Ajustar permisos de la carpeta web
-        run: chmod -R 755 /var/www/html/jorge_sotelo/
+        run: chmod -R 755 /var/www/jorge_site/
+
 
 
 
