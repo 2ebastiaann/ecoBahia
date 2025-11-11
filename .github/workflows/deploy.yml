@@ -32,11 +32,6 @@ jobs:
           cd frontend
           npm run build --prod
 
-      # 5️⃣ Limpia el contenido viejo
-      - name: Limpiar carpeta del servidor
-        run: |
-          rm -rf /var/www/html/jorge_sotelo/*
-
       # 6️⃣ Copia los archivos compilados al servidor
       - name: Copiar archivos compilados a la carpeta del servidor
         run: |
