@@ -1,5 +1,14 @@
 import { Routes } from '@angular/router';
 import { Login } from './pages/login/login';
+import { MainComponent } from './pages/main/main';
+
 export const routes: Routes = [
-    { path: '', component: Login } 
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+
+  { path: 'login', component: Login },
+  { path: 'main', component: MainComponent },
+
+  // Ruta comodín si intentan entrar a algo que no existe
+  { path: '**', redirectTo: 'login' }
 ];
+
