@@ -1,4 +1,4 @@
-name: Deploy Frontend
+name: 🚀 Deploy Frontend ecoBahia
 
 on:
   push:
@@ -7,30 +7,77 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      # ----------------- CHECKOUT -----------------
+      - name: 🧩 Checkout código
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      # ----------------- NODE -----------------
+      - name: ⚙ Configurar Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install dependencies
+      # ----------------- DEPENDENCIAS -----------------
+      - name: 💡 Instalar Angular CLI
+        run: npm install -g @angular/cli
+
+      - name: 📦 Instalar dependencias frontend
         run: |
           cd frontend
           npm install
 
-      - name: Build Angular
+      # ----------------- BUILD ANGULAR -----------------
+      - name: 🏗 Compilar ecoBahia
         run: |
           cd frontend
-          npm run build --prod
+          ng build --configuration production --base-href /
 
-      - name: Deploy dist to web folder
+      # ----------------- PREPARAR ARCHIVOS -----------------
+      - name: 🧩 Preparar dist ecoBahia
         run: |
-          cp -r frontend/dist/ecoBahia/browser/* /var/www/jorge_site/
+          rm -rf deploy-frontend
+          mkdir deploy-frontend
+          cp -r frontend/dist/ecoBahia/browser/* deploy-frontend/
 
-      - name: Set permissions
-        run: chmod -R 755 /var/www/jorge_site/
+      - name: 🧾 Ver contenido preparado
+        run: ls -R deploy-frontend
+
+      # ----------------- LIMPIAR SERVIDOR -----------------
+      - name: 🧹 Limpiar carpeta frontend en servidor
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          script: |
+            rm -rf /var/www/jorge_site/*
+            mkdir -p /var/www/jorge_site
+            echo "✔ Carpeta del servidor limpia"
+
+      # ----------------- SUBIR BUILD -----------------
+      - name: 📤 Subir frontend ecoBahia al servidor
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          source: "deploy-frontend/*"
+          target: "/var/www/jorge_site/"
+          overwrite: true
+
+      # ----------------- PERMISOS Y FIN -----------------
+      - name: ⚙ Configuración final en servidor
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          script: |
+            chmod -R 755 /var/www/jorge_site
+            echo "✔ Deploy ecoBahia completado correctamente"
