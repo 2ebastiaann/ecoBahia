@@ -6,37 +6,31 @@ on:
       - main
 
 jobs:
-  build:
+  deploy:
     runs-on: self-hosted
 
     steps:
-      - name: Clonar repositorio
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Instalar Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: Instalar dependencias
+      - name: Install dependencies
         run: |
           cd frontend
           npm install
 
-      - name: Compilar proyecto Angular
+      - name: Build Angular
         run: |
           cd frontend
           npm run build --prod
 
-      - name: Copiar archivos compilados al directorio web
-        run: cp -r frontend/dist/ecoBahia/browser/* /var/www/jorge_site/
+      - name: Deploy dist to web folder
+        run: |
+          cp -r frontend/dist/ecoBahia/browser/* /var/www/jorge_site/
 
-      - name: Ajustar permisos de la carpeta web
+      - name: Set permissions
         run: chmod -R 755 /var/www/jorge_site/
-
-
-
-
-
-
-
