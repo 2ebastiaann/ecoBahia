@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,8 @@ export class Login {
   password: string = '';
   rememberMe: boolean = false;
   isHovered: boolean = false;
+
+  constructor(private router: Router) {}
 
   handleSubmit(): void {
     console.log('Login attempt:', {
@@ -30,23 +33,18 @@ export class Login {
 
     // Aquí conectarás tu lógica de autenticación
     alert(`Bienvenido, ${this.username}!`);
+    // Después del login exitoso, podrías redirigir al dashboard:
+    // this.router.navigate(['/dashboard']);
   }
 
   handleGoogleLogin(): void {
     console.log('Inicio de sesión con Google');
-    
-    // Aquí integrarás Google OAuth
-    // Ejemplo con Angular Google Sign-In:
-    // this.authService.signInWithGoogle().subscribe({
-    //   next: (response) => {
-    //     this.router.navigate(['/dashboard']);
-    //   },
-    //   error: (error) => {
-    //     console.error('Error con Google:', error);
-    //   }
-    // });
-
     alert('Redirigiendo a Google...');
+  }
+
+  handleRegister(): void {
+    console.log('Navegando a registro...');
+    this.router.navigate(['/registro']);
   }
 
   handleKeyPress(event: KeyboardEvent): void {
