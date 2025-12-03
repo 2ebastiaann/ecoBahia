@@ -1,1 +1,11 @@
-<p>header works!</p>
+<header class="header">
+	<div class="header-left">
+		<button (click)="onToggle()" class="toggle-btn">
+			{{ sidebarOpen ? '✕' : '☰' }}
+		</button>
+		<h2>{{ title }}</h2>
+	</div>
+	<div class="header-right">
+		Estado de rutas, horarios, avisos y vehículos
+	</div>
+</header>

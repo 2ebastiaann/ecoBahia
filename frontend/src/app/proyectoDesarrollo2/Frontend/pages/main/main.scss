@@ -6,17 +6,6 @@ $emerald: #34d399;
 $teal: #14b8a6;
 
 // Animaciones personalizadas
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -70,21 +59,14 @@ $teal: #14b8a6;
   }
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
   }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes glow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -94,213 +76,6 @@ $teal: #14b8a6;
   background: linear-gradient(135deg, #f9fafb 0%, #f0fdf4 50%, #ecfdf5 100%);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   overflow: hidden;
-}
-
-// Sidebar con gradiente verde elegante
-.sidebar {
-  width: 256px;
-  background: linear-gradient(180deg, #065f46 0%, #047857 50%, #059669 100%);
-  color: white;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  flex-shrink: 0;
-  box-shadow: 4px 0 24px rgba(16, 185, 129, 0.15);
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 20% 50%, rgba(52, 211, 153, 0.1) 0%, transparent 50%);
-    pointer-events: none;
-  }
-
-  &.collapsed {
-    width: 0;
-    overflow: hidden;
-  }
-
-  .logo-section {
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(52, 211, 153, 0.2);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    animation: slideDown 0.6s ease-out;
-    position: relative;
-    z-index: 1;
-
-    .logo {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, $emerald 0%, $green-primary 100%);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.5rem;
-      box-shadow: 0 8px 16px rgba(16, 185, 129, 0.4);
-      transition: all 0.3s ease;
-      animation: glow 3s ease-in-out infinite;
-
-      &:hover {
-        transform: scale(1.1) rotate(5deg);
-      }
-    }
-
-    .logo-text {
-      h1 {
-        font-size: 1.25rem;
-        font-weight: bold;
-        margin: 0;
-        background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-
-      p {
-        font-size: 0.75rem;
-        color: rgba(167, 243, 208, 0.8);
-        margin: 0;
-      }
-    }
-  }
-
-  .menu {
-    flex: 1;
-    padding: 1rem 0;
-    position: relative;
-    z-index: 1;
-
-    button {
-      width: 100%;
-      padding: 0.875rem 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      text-align: left;
-      position: relative;
-      font-weight: 500;
-      animation: slideInLeft 0.5s ease-out forwards;
-      opacity: 0;
-
-      @for $i from 1 through 5 {
-        &:nth-child(#{$i}) {
-          animation-delay: #{$i * 0.1}s;
-        }
-      }
-
-      &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 4px;
-        height: 0;
-        background: $emerald;
-        transition: height 0.3s ease;
-        border-radius: 0 4px 4px 0;
-      }
-
-      &:hover {
-        background: rgba(52, 211, 153, 0.15);
-        transform: translateX(4px);
-        
-        &::before {
-          height: 60%;
-        }
-      }
-
-      &.active {
-        background: linear-gradient(90deg, rgba(16, 185, 129, 0.3) 0%, rgba(52, 211, 153, 0.2) 100%);
-        border-left: 4px solid $emerald;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-
-        i {
-          animation: pulse-soft 2s ease-in-out infinite;
-        }
-      }
-    }
-  }
-
-  .user-section {
-    padding: 1rem;
-    border-top: 1px solid rgba(52, 211, 153, 0.2);
-    position: relative;
-    z-index: 1;
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
-      padding: 0.75rem;
-      border-radius: 12px;
-      background: rgba(16, 185, 129, 0.15);
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: rgba(16, 185, 129, 0.25);
-        transform: translateY(-2px);
-      }
-
-      .user-avatar {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, $green-primary 0%, $emerald 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
-        font-weight: 600;
-      }
-
-      span {
-        font-weight: 500;
-      }
-    }
-
-    .logout-btn {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      font-weight: 500;
-      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-
-      &:hover {
-        background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
-      }
-
-      &:active {
-        transform: translateY(0);
-      }
-    }
-  }
 }
 
 // Main Content con animaciones
@@ -334,6 +109,7 @@ $teal: #14b8a6;
         cursor: pointer;
         transition: all 0.3s ease;
         border-radius: 12px;
+        font-size: 1.25rem;
 
         &:hover {
           background: rgba(16, 185, 129, 0.1);
@@ -365,14 +141,6 @@ $teal: #14b8a6;
       padding: 0.5rem 1rem;
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(52, 211, 153, 0.1) 100%);
       border-radius: 20px;
-
-      .status-dot {
-        width: 8px;
-        height: 8px;
-        background: $green-primary;
-        border-radius: 50%;
-        animation: pulse-soft 2s ease-in-out infinite;
-      }
     }
   }
 
@@ -380,6 +148,9 @@ $teal: #14b8a6;
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 
     // Scroll personalizado
     &::-webkit-scrollbar {
@@ -404,7 +175,7 @@ $teal: #14b8a6;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 1.5rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0;
     }
 
     .card {
@@ -534,7 +305,6 @@ $teal: #14b8a6;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0.5rem 0;
-  text-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
 }
 
 // Map Card
@@ -542,12 +312,13 @@ $teal: #14b8a6;
   background: white;
   border-radius: 20px;
   box-shadow: 0 4px 16px rgba(16, 185, 129, 0.1);
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   overflow: hidden;
   border: 1px solid rgba(16, 185, 129, 0.1);
   animation: scaleIn 0.6s ease-out 0.4s forwards;
   opacity: 0;
   transition: all 0.3s ease;
+  min-height: 500px;
 
   &:hover {
     transform: translateY(-8px);
@@ -612,9 +383,11 @@ $teal: #14b8a6;
   }
 
   .map-container {
-    height: 500px;
+    height: 100%;
     width: 100%;
     position: relative;
+    background: #f0f0f0;
+    border-radius: 8px;
   }
 }
 
@@ -678,9 +451,6 @@ $teal: #14b8a6;
     font-size: 0.875rem;
     color: #6b7280;
     margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
   }
 
   .divider {
@@ -693,6 +463,9 @@ $teal: #14b8a6;
     padding: 1rem;
     background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
     border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 
     .time-label {
       font-size: 0.875rem;
@@ -853,16 +626,6 @@ $teal: #14b8a6;
           font-size: 0.875rem;
           color: #6b7280;
           margin: 0;
-          display: flex;
-          align-items: center;
-          gap: 0.25rem;
-
-          .time-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: currentColor;
-          }
         }
       }
 
@@ -887,6 +650,144 @@ $teal: #14b8a6;
   }
 }
 
+// ============================================
+// ESTILOS PARA CREACIÓN Y GESTIÓN DE RUTAS
+// ============================================
+
+// Botón de crear ruta
+.btn-create-route {
+  background: linear-gradient(135deg, $green-primary 0%, $emerald 100%) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+
+  &:hover {
+    background: linear-gradient(135deg, $emerald 0%, $green-primary 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4) !important;
+  }
+}
+
+// Card de rutas guardadas
+.rutas-card {
+  animation-delay: 0.6s;
+
+  .rutas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(16, 185, 129, 0.05);
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $green-primary;
+      border-radius: 3px;
+
+      &:hover {
+        background: $emerald;
+      }
+    }
+
+    .ruta-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: linear-gradient(135deg, #f9fafb 0%, rgba(209, 250, 229, 0.2) 100%);
+      border-radius: 12px;
+      border: 2px solid rgba(16, 185, 129, 0.1);
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        border-color: rgba(16, 185, 129, 0.3);
+      }
+
+      .ruta-color {
+        width: 8px;
+        height: 60px;
+        border-radius: 4px;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .ruta-info {
+        flex: 1;
+
+        h4 {
+          margin: 0 0 0.5rem 0;
+          font-size: 1rem;
+          font-weight: 600;
+          color: #1f2937;
+        }
+
+        .ruta-details {
+          margin: 0 0 0.5rem 0;
+          font-size: 0.875rem;
+          color: #6b7280;
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+
+          .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: linear-gradient(135deg, $green-light 0%, rgba(167, 243, 208, 0.5) 100%);
+            color: #065f46;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+          }
+        }
+
+        .ruta-description {
+          margin: 0;
+          font-size: 0.875rem;
+          color: #9ca3af;
+          font-style: italic;
+        }
+      }
+
+      .ruta-actions {
+        display: flex;
+        gap: 0.5rem;
+
+        .btn-icon {
+          background: none;
+          border: none;
+          padding: 0.625rem;
+          cursor: pointer;
+          border-radius: 8px;
+          font-size: 1.25rem;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background: rgba(59, 130, 246, 0.1);
+            transform: scale(1.1);
+          }
+
+          &.btn-danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+          }
+        }
+      }
+    }
+  }
+}
+
 // Responsive
 @media (max-width: 1024px) {
   .cards-grid {
@@ -900,81 +801,35 @@ $teal: #14b8a6;
 
     .map-controls {
       width: 100%;
-      
+      flex-wrap: wrap;
+
       .map-btn {
-        flex: 1;
+        flex: 1 1 calc(50% - 0.25rem);
+        min-width: 140px;
       }
     }
   }
 }
 
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    z-index: 1000;
-    height: 100vh;
-  }
-
-  .header-right {
-    display: none;
-  }
-}
-
-// Estilos específicos para el contenedor de Leaflet
-#map {
-  height: 500px;
-  width: 100%;
-  position: relative;
-  z-index: 1;
-  background: #f0f0f0;
-  
-  // Asegurar que los tiles de Leaflet se rendericen correctamente
-  .leaflet-container {
-    height: 100%;
-    width: 100%;
-    background: #f0f0f0;
-  }
-
-  .leaflet-tile-pane {
-    z-index: 1;
-  }
-
-  .leaflet-overlay-pane {
-    z-index: 2;
-  }
-
-  .leaflet-marker-pane {
-    z-index: 3;
-  }
-
-  .leaflet-popup-pane {
-    z-index: 4;
-  }
-
-  // Estilos para los iconos personalizados
-  .custom-truck-icon,
-  .custom-warning-icon,
-  .custom-location-icon {
-    transition: transform 0.3s ease;
-
-    &:hover {
-      transform: scale(1.2) !important;
-      z-index: 1000 !important;
+@media (max-width: 640px) {
+  .map-header .map-controls {
+    .map-btn {
+      flex: 1 1 100%;
     }
   }
-}
 
-// Asegurar que el contenedor del mapa tenga altura
-.map-container {
-  height: 500px !important;
-  width: 100%;
-  min-height: 500px;
-  position: relative;
-  overflow: hidden;
-}
+  .rutas-list .ruta-item {
+    flex-direction: column;
+    align-items: flex-start !important;
 
-.map-card {
-  .map-container {
-    height: 500px !important;
+    .ruta-color {
+      width: 100% !important;
+      height: 6px !important;
+    }
+
+    .ruta-actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
   }
 }

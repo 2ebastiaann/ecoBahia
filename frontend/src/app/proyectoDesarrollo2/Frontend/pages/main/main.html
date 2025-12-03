@@ -1,53 +1,26 @@
 <div class="dashboard-container">
-  <!-- Sidebar -->
-  <aside class="sidebar" [class.collapsed]="!sidebarOpen">
-    <div class="logo-section">
-      <div class="logo">EB</div>
-      <div class="logo-text">
-        <h1>EcoBahía</h1>
-        <p>Sistema de Recolección</p>
-      </div>
-    </div>
-
-    <nav class="menu">
-      <button 
-        *ngFor="let item of menuItems" 
-        [class.active]="activeSection === item.id"
-        (click)="setActiveSection(item.id)">
-        <i [class]="item.icon"></i>
-        <span>{{ item.label }}</span>
-      </button>
-    </nav>
-
-    <div class="user-section">
-      <div class="user-info">
-        <div class="user-avatar">A</div>
-        <span>Admin</span>
-      </div>
-      <button class="logout-btn" (click)="logout()">
-        <i class="icon-logout"></i>
-        Cerrar sesión
-      </button>
-    </div>
-  </aside>
+  <!-- Sidebar Component -->
+  <app-sidebar
+    [isOpen]="sidebarOpen"
+    [activeSection]="activeSection"
+    [menuItems]="menuItems"
+    (sectionChange)="onSectionChange($event)"
+    (logoutClick)="onLogout()">
+  </app-sidebar>
 
   <!-- Main Content -->
   <main class="main-content">
-    <!-- Header -->
-    <header class="header">
-      <div class="header-left">
-        <button (click)="toggleSidebar()" class="toggle-btn">
-          {{ sidebarOpen ? '✕' : '☰' }}
-        </button>
-        <h2>Bienvenido a EcoBahía</h2>
-      </div>
-      <div class="header-right">
-        Estado de rutas, horarios, avisos y vehículos
-      </div>
-    </header>
 
     <!-- Content -->
     <div class="content">
+      <!-- Header (moved inside content so it scrolls with the page) -->
+      <app-header
+        [sidebarOpen]="sidebarOpen"
+        [title]="'Bienvenido a EcoBahía'"
+        (toggle)="toggleSidebar()"
+        (logout)="onLogout()">
+      </app-header>
+      
       <!-- Cards Row -->
       <div class="cards-grid">
         <!-- Vehículo Actual -->
@@ -56,7 +29,7 @@
           <div class="vehicle-info">
             <div class="status-badge">
               <span class="status-dot"></span>
-              En ruta • M. García
+              En ruta • {{ vehiculoActual.conductor }}
             </div>
             <div class="progress-bar">
               <div class="progress" [style.width.%]="vehiculoActual.progreso"></div>
@@ -111,7 +84,7 @@
         </div>
       </div>
 
-      <!-- Mapa - AQUÍ SE INTEGRA TU SERVICIO -->
+      <!-- Mapa -->
       <div class="map-card">
         <div class="map-header">
           <h3>
@@ -119,6 +92,9 @@
             Mapa de Rutas - Buenaventura
           </h3>
           <div class="map-controls">
+            <button class="map-btn btn-create-route" (click)="openCreateRouteModal()">
+              ➕ Crear Ruta
+            </button>
             <button class="map-btn" (click)="verTodasRutas()">
               Ver todas las rutas
             </button>
@@ -127,8 +103,34 @@
             </button>
           </div>
         </div>
-        <!-- Contenedor del mapa de Leaflet -->
         <div id="map" class="map-container"></div>
+      </div>
+
+      <!-- Lista de Rutas Guardadas -->
+      <div class="card rutas-card" *ngIf="savedRoutes.length > 0">
+        <h3>📋 Rutas Guardadas ({{ savedRoutes.length }})</h3>
+        <div class="rutas-list">
+          <div class="ruta-item" *ngFor="let ruta of savedRoutes">
+            <div class="ruta-color" [style.background]="ruta.color"></div>
+            <div class="ruta-info">
+              <h4>{{ ruta.nombre }}</h4>
+              <p class="ruta-details">
+                <span class="badge">{{ ruta.zonaAsignada }}</span>
+                <span *ngIf="ruta.distanciaEstimada">• {{ ruta.distanciaEstimada }} km</span>
+                <span *ngIf="ruta.tiempoEstimado">• {{ ruta.tiempoEstimado }} min</span>
+              </p>
+              <p class="ruta-description" *ngIf="ruta.descripcion">{{ ruta.descripcion }}</p>
+            </div>
+            <div class="ruta-actions">
+              <button class="btn-icon" (click)="focusOnRoute(ruta.id!)" title="Ver en mapa">
+                🗺️
+              </button>
+              <button class="btn-icon btn-danger" (click)="deleteRoute(ruta.id!)" title="Eliminar">
+                🗑️
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Avisos -->
@@ -151,4 +153,11 @@
       </div>
     </div>
   </main>
+
+  <!-- Modal para crear rutas -->
+  <app-create-route
+    [isOpen]="showCreateRouteModal"
+    (close)="closeCreateRouteModal()"
+    (routeCreated)="onRouteCreated($event)">
+  </app-create-route>
 </div>

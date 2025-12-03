@@ -1,0 +1,209 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>
+        <span class="icon">🗺️</span>
+        Crear Nueva Ruta
+      </h2>
+      <button class="close-btn" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Información básica -->
+      <div class="form-section">
+        <h3>📋 Información General</h3>
+        
+        <div class="form-group">
+          <label>Nombre de la ruta *</label>
+          <input 
+            type="text" 
+            [(ngModel)]="routeData.nombre"
+            placeholder="Ej: Ruta Centro - Puerto"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea 
+            [(ngModel)]="routeData.descripcion"
+            placeholder="Describe la ruta y puntos importantes..."
+            class="form-control"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Zona asignada *</label>
+            <select [(ngModel)]="routeData.zonaAsignada" class="form-control">
+              <option value="">Seleccionar zona</option>
+              <option value="norte">Zona Norte</option>
+              <option value="sur">Zona Sur</option>
+              <option value="este">Zona Este</option>
+              <option value="oeste">Zona Oeste</option>
+              <option value="centro">Zona Centro</option>
+              <option value="puerto">Zona Puerto</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Color de la ruta</label>
+            <select [(ngModel)]="routeData.color" class="form-control" (change)="updateRoutePreview()">
+              <option *ngFor="let color of colors" [value]="color.value">
+                {{ color.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Estado</label>
+          <select [(ngModel)]="routeData.estado" class="form-control">
+            <option value="activa">Activa</option>
+            <option value="inactiva">Inactiva</option>
+            <option value="en_revision">En Revisión</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Puntos de la ruta -->
+      <div class="form-section">
+        <h3>📍 Puntos de la Ruta</h3>
+        
+        <!-- Punto de Inicio -->
+        <div class="route-point-section">
+          <div class="point-header">
+            <h4>🟢 Punto de Inicio *</h4>
+            <button 
+              class="btn-select-map" 
+              [class.selecting]="selectingPoint === 'inicio'"
+              (click)="startSelectingPoint('inicio')"
+            >
+              {{ selectingPoint === 'inicio' ? '📍 Seleccionando...' : '🗺️ Seleccionar en mapa' }}
+            </button>
+          </div>
+
+          <div *ngIf="routeData.puntoInicio" class="selected-point">
+            <span>{{ routeData.puntoInicio.name }}</span>
+            <small>{{ routeData.puntoInicio.lat | number:'1.5-5' }}, {{ routeData.puntoInicio.lng | number:'1.5-5' }}</small>
+          </div>
+
+          <div class="predefined-locations">
+            <label>O selecciona una ubicación predefinida:</label>
+            <select 
+              class="form-control" 
+              (change)="usePredefinedLocation('inicio', predefinedLocations[$any($event.target).selectedIndex - 1])"
+            >
+              <option value="">Elegir ubicación...</option>
+              <option *ngFor="let loc of predefinedLocations" [value]="loc.name">
+                {{ loc.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Puntos Intermedios -->
+        <div class="route-point-section">
+          <div class="point-header">
+            <h4>🔵 Puntos Intermedios (Opcional)</h4>
+            <button 
+              class="btn-select-map" 
+              [class.selecting]="selectingPoint === 'intermedio'"
+              (click)="startSelectingPoint('intermedio')"
+            >
+              {{ selectingPoint === 'intermedio' ? '📍 Seleccionando...' : '➕ Agregar punto' }}
+            </button>
+          </div>
+
+          <div class="intermediate-points-list" *ngIf="routeData.puntosIntermedios.length > 0">
+            <div 
+              *ngFor="let point of routeData.puntosIntermedios; let i = index" 
+              class="intermediate-point"
+            >
+              <div class="point-info">
+                <span>{{ i + 1 }}. {{ point.name }}</span>
+                <small>{{ point.lat | number:'1.5-5' }}, {{ point.lng | number:'1.5-5' }}</small>
+              </div>
+              <button class="btn-remove" (click)="removeIntermediatePoint(i)">🗑️</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Punto Final -->
+        <div class="route-point-section">
+          <div class="point-header">
+            <h4>🔴 Punto Final *</h4>
+            <button 
+              class="btn-select-map" 
+              [class.selecting]="selectingPoint === 'fin'"
+              (click)="startSelectingPoint('fin')"
+            >
+              {{ selectingPoint === 'fin' ? '📍 Seleccionando...' : '🗺️ Seleccionar en mapa' }}
+            </button>
+          </div>
+
+          <div *ngIf="routeData.puntoFin" class="selected-point">
+            <span>{{ routeData.puntoFin.name }}</span>
+            <small>{{ routeData.puntoFin.lat | number:'1.5-5' }}, {{ routeData.puntoFin.lng | number:'1.5-5' }}</small>
+          </div>
+
+          <div class="predefined-locations">
+            <label>O selecciona una ubicación predefinida:</label>
+            <select 
+              class="form-control" 
+              (change)="usePredefinedLocation('fin', predefinedLocations[$any($event.target).selectedIndex - 1])"
+            >
+              <option value="">Elegir ubicación...</option>
+              <option *ngFor="let loc of predefinedLocations" [value]="loc.name">
+                {{ loc.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información calculada -->
+      <div class="form-section info-section" *ngIf="routeData.puntoInicio && routeData.puntoFin">
+        <h3>📊 Información Calculada</h3>
+        
+        <div class="info-grid">
+          <div class="info-card">
+            <span class="info-label">Distancia estimada</span>
+            <span class="info-value">{{ routeData.distanciaEstimada || 0 | number:'1.2-2' }} km</span>
+          </div>
+          <div class="info-card">
+            <span class="info-label">Tiempo estimado</span>
+            <span class="info-value">{{ routeData.tiempoEstimado || 0 }} min</span>
+          </div>
+          <div class="info-card">
+            <span class="info-label">Puntos totales</span>
+            <span class="info-value">{{ 2 + routeData.puntosIntermedios.length }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Instrucciones -->
+      <div class="instructions">
+        <p><strong>💡 Instrucciones:</strong></p>
+        <ul>
+          <li>Haz clic en "Seleccionar en mapa" y luego haz clic en el mapa para marcar el punto</li>
+          <li>Los puntos intermedios son opcionales y te permiten crear rutas más complejas</li>
+          <li>Puedes usar ubicaciones predefinidas o seleccionar cualquier punto en el mapa</li>
+          <li>La ruta se dibujará automáticamente conectando todos los puntos</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeModal()">Cancelar</button>
+      <button 
+        class="btn-save" 
+        (click)="saveRoute()"
+        [disabled]="!isValidRoute()"
+      >
+        💾 Guardar Ruta
+      </button>
+    </div>
+  </div>
+</div>

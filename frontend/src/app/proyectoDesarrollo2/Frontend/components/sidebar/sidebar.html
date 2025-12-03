@@ -1,1 +1,30 @@
-<p>sidebar works!</p>
+<aside class="sidebar" [class.collapsed]="!isOpen">
+  <div class="logo-section">
+    <div class="logo">EB</div>
+    <div class="logo-text">
+      <h1>EcoBahía</h1>
+      <p>Sistema de Recolección</p>
+    </div>
+  </div>
+
+  <nav class="menu">
+    <button 
+      *ngFor="let item of menuItems" 
+      [class.active]="activeSection === item.id"
+      (click)="setActiveSection(item.id)">
+      <i [class]="item.icon"></i>
+      <span>{{ item.label }}</span>
+    </button>
+  </nav>
+
+  <div class="user-section">
+    <div class="user-info">
+      <div class="user-avatar">A</div>
+      <span>Admin</span>
+    </div>
+    <button class="logout-btn" (click)="logout()">
+      <i class="icon-logout"></i>
+      Cerrar sesión
+    </button>
+  </div>
+</aside>

@@ -1,18 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
 
-import { HeaderComponent } from './header';
+@Component({
+  selector: 'app-route',
+  template: ''
+})
+class Route {}
 
-describe('HeaderComponent', () => {
-  let component: HeaderComponent;
-  let fixture: ComponentFixture<HeaderComponent>;
+describe('Route', () => {
+  let component: Route;
+  let fixture: ComponentFixture<Route>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HeaderComponent]
+      declarations: [Route]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(HeaderComponent);
+    fixture = TestBed.createComponent(Route);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

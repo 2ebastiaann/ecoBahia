@@ -1,11 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-header',   // este es el nombre que usarás en HTML
-  standalone: true,          // <--- clave para poder usarlo en otros componentes
+  selector: 'app-header',
+  standalone: true,
   templateUrl: './header.html',
   styleUrls: ['./header.scss'],
-  imports: [CommonModule]    // módulos que necesita
+  imports: [CommonModule]
 })
-export class Header { }       // <--- el nombre de la clase es Header
+export class HeaderComponent {
+  @Input() sidebarOpen = true;
+  @Input() title = 'EcoBahía';
+
+  @Output() toggle = new EventEmitter<void>();
+  @Output() logout = new EventEmitter<void>();
+
+  onToggle(): void {
+    this.toggle.emit();
+  }
+
+  onLogout(): void {
+    this.logout.emit();
+  }
+}
