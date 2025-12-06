@@ -1,0 +1,44 @@
+<div class="map-wrapper">
+  
+  <div class="top-bar">
+    <button class="btn" (click)="router.navigate(['/dashboard'])">⬅ Volver</button>
+
+    <button class="btn primary" (click)="empezarCrearRuta()" *ngIf="!creandoRuta">
+      ➕ Crear Ruta
+    </button>
+
+    <button class="btn success" (click)="guardarRuta()" *ngIf="creandoRuta">
+      ✔ Guardar Ruta
+    </button>
+
+    <button class="btn danger" (click)="limpiarMapa()">
+      🗑 Limpiar
+    </button>
+  </div>
+
+  <div id="mapContainer"></div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="mostrarModalNombreRuta">
+    <div class="modal">
+      <h3>Nombre de la ruta</h3>
+
+      <input type="text" [(ngModel)]="nombreRuta" placeholder="Ej: Ruta Norte">
+
+      <div class="modal-buttons">
+        <button class="btn danger" (click)="mostrarModalNombreRuta = false">Cancelar</button>
+        <button class="btn primary" (click)="confirmarNombreRuta()">Comenzar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="rutas-list">
+    <h3>Rutas guardadas</h3>
+
+    <div class="ruta-item" *ngFor="let r of rutas">
+      <span>{{ r.nombre_ruta }}</span>
+      <button class="btn small" (click)="mostrarRuta(r)">Ver</button>
+    </div>
+  </div>
+
+</div>

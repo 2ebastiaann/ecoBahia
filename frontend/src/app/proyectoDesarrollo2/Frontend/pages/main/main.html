@@ -1,5 +1,6 @@
 <div class="dashboard-container">
-  <!-- Sidebar Component -->
+
+  <!-- Sidebar -->
   <app-sidebar
     [isOpen]="sidebarOpen"
     [activeSection]="activeSection"
@@ -11,153 +12,21 @@
   <!-- Main Content -->
   <main class="main-content">
 
-    <!-- Content -->
     <div class="content">
-      <!-- Header (moved inside content so it scrolls with the page) -->
+
+      <!-- Header -->
       <app-header
         [sidebarOpen]="sidebarOpen"
         [title]="'Bienvenido a EcoBahía'"
         (toggle)="toggleSidebar()"
         (logout)="onLogout()">
       </app-header>
-      
-      <!-- Cards Row -->
-      <div class="cards-grid">
-        <!-- Vehículo Actual -->
-        <div class="card">
-          <h3>Vehículo actual</h3>
-          <div class="vehicle-info">
-            <div class="status-badge">
-              <span class="status-dot"></span>
-              En ruta • {{ vehiculoActual.conductor }}
-            </div>
-            <div class="progress-bar">
-              <div class="progress" [style.width.%]="vehiculoActual.progreso"></div>
-            </div>
-            <div class="percentage">{{ vehiculoActual.progreso }}%</div>
-            <div class="info-row">
-              <span>Placa:</span>
-              <strong>{{ vehiculoActual.placa }}</strong>
-            </div>
-            <button class="btn-primary" (click)="verRutaActiva()">
-              Ver ruta activa
-            </button>
-          </div>
-        </div>
 
-        <!-- Próximo Camión -->
-        <div class="card">
-          <h3>Próximo camión</h3>
-          <div class="truck-info">
-            <div class="truck-icon">
-              <i class="icon-truck"></i>
-            </div>
-            <div class="truck-details">
-              <p class="route-name">{{ proximoCamion.ruta }}</p>
-              <p class="zone">{{ proximoCamion.zona }}</p>
-            </div>
-            <div class="divider"></div>
-            <div class="time-section">
-              <span class="time-label">Hora estimada:</span>
-              <span class="time-value">{{ proximoCamion.hora }}</span>
-            </div>
-          </div>
-        </div>
+      <!-- Dynamic content loaded by the router -->
+      <router-outlet></router-outlet>
 
-        <!-- Eficiencia -->
-        <div class="card">
-          <h3>Eficiencia</h3>
-          <div class="efficiency">
-            <div class="big-number">{{ eficiencia.porcentaje }}%</div>
-            <p class="efficiency-label">Eficiencia del día</p>
-            <div class="stats">
-              <div class="stat-item">
-                <span>KM hoy:</span>
-                <strong>{{ eficiencia.kmHoy }}</strong>
-              </div>
-              <div class="stat-item">
-                <span>Kg recolectados:</span>
-                <strong>{{ eficiencia.kgRecolectados | number }}</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Mapa -->
-      <div class="map-card">
-        <div class="map-header">
-          <h3>
-            <i class="icon-map"></i>
-            Mapa de Rutas - Buenaventura
-          </h3>
-          <div class="map-controls">
-            <button class="map-btn btn-create-route" (click)="openCreateRouteModal()">
-              ➕ Crear Ruta
-            </button>
-            <button class="map-btn" (click)="verTodasRutas()">
-              Ver todas las rutas
-            </button>
-            <button class="map-btn active" (click)="verVehiculosActivos()">
-              Vehículos activos
-            </button>
-          </div>
-        </div>
-        <div id="map" class="map-container"></div>
-      </div>
-
-      <!-- Lista de Rutas Guardadas -->
-      <div class="card rutas-card" *ngIf="savedRoutes.length > 0">
-        <h3>📋 Rutas Guardadas ({{ savedRoutes.length }})</h3>
-        <div class="rutas-list">
-          <div class="ruta-item" *ngFor="let ruta of savedRoutes">
-            <div class="ruta-color" [style.background]="ruta.color"></div>
-            <div class="ruta-info">
-              <h4>{{ ruta.nombre }}</h4>
-              <p class="ruta-details">
-                <span class="badge">{{ ruta.zonaAsignada }}</span>
-                <span *ngIf="ruta.distanciaEstimada">• {{ ruta.distanciaEstimada }} km</span>
-                <span *ngIf="ruta.tiempoEstimado">• {{ ruta.tiempoEstimado }} min</span>
-              </p>
-              <p class="ruta-description" *ngIf="ruta.descripcion">{{ ruta.descripcion }}</p>
-            </div>
-            <div class="ruta-actions">
-              <button class="btn-icon" (click)="focusOnRoute(ruta.id!)" title="Ver en mapa">
-                🗺️
-              </button>
-              <button class="btn-icon btn-danger" (click)="deleteRoute(ruta.id!)" title="Eliminar">
-                🗑️
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Avisos -->
-      <div class="card avisos-card">
-        <h3>Últimos avisos</h3>
-        <div class="avisos-list">
-          <div class="aviso" *ngFor="let aviso of avisos" [class]="'aviso-' + aviso.tipo">
-            <div class="aviso-icon">
-              <i class="icon-alert"></i>
-            </div>
-            <div class="aviso-content">
-              <p class="aviso-title">{{ aviso.titulo }}</p>
-              <p class="aviso-time">{{ aviso.tiempo }}</p>
-            </div>
-            <button class="aviso-action" (click)="marcarLeido(aviso.id)">
-              Marcar leído
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
+
   </main>
 
-  <!-- Modal para crear rutas -->
-  <app-create-route
-    [isOpen]="showCreateRouteModal"
-    (close)="closeCreateRouteModal()"
-    (routeCreated)="onRouteCreated($event)">
-  </app-create-route>
 </div>

@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 interface MenuItem {
   id: string;
@@ -11,7 +11,7 @@ interface MenuItem {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],  // <-- importante
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.scss']
 })
@@ -31,5 +31,24 @@ export class SidebarComponent {
 
   logout(): void {
     this.logoutClick.emit();
+  }
+
+  navigateTo(item: MenuItem): void {
+    this.setActiveSection(item.id); // marca el item como activo
+    // Navegación simple usando rutas
+    switch(item.id) {
+      case 'vehiculos':
+        this.router.navigate(['/main', 'vehiculos']);
+        break;
+      case 'main':
+        this.router.navigate(['/main']);
+        break;
+      case 'rutas':
+        this.router.navigate(['/mapa']);
+        break;
+      default:
+        this.router.navigate(['/main']);
+        break;
+    }
   }
 }

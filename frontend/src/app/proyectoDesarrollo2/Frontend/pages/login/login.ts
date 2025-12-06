@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -11,30 +12,34 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.scss']
 })
 export class Login {
-  username: string = '';
+  email: string = '';
   password: string = '';
   rememberMe: boolean = false;
   isHovered: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   handleSubmit(): void {
-    console.log('Login attempt:', {
-      username: this.username,
-      password: this.password,
-      rememberMe: this.rememberMe
-    });
-
-    // Validación básica
-    if (!this.username || !this.password) {
+    if (!this.email || !this.password) {
       alert('Por favor completa todos los campos');
       return;
     }
 
-    // Aquí conectarás tu lógica de autenticación
-    alert(`Bienvenido, ${this.username}!`);
-    // Después del login exitoso, podrías redirigir al dashboard:
-    // this.router.navigate(['/dashboard']);
+    this.authService.login(this.email, this.password).subscribe({
+      next: res => {
+        if (res.ok) {
+          this.authService.guardarToken(res.token);
+          alert(`Bienvenido, ${res.usuario.email}!`);
+          this.router.navigate(['/main']);
+        } else {
+          alert('Usuario o contraseña incorrectos');
+        }
+      },
+      error: err => {
+        console.error('Error en login:', err);
+        alert('Error al iniciar sesión');
+      }
+    });
   }
 
   handleGoogleLogin(): void {
@@ -43,14 +48,11 @@ export class Login {
   }
 
   handleRegister(): void {
-    console.log('Navegando a registro...');
     this.router.navigate(['/registro']);
   }
 
   handleKeyPress(event: KeyboardEvent): void {
-    if (event.key === 'Enter') {
-      this.handleSubmit();
-    }
+    if (event.key === 'Enter') this.handleSubmit();
   }
 
   onMouseEnter(): void {

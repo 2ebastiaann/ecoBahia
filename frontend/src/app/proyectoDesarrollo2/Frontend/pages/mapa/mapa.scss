@@ -1,0 +1,80 @@
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+#mapContainer {
+  height: 100%;
+  width: 100%;
+}
+
+.top-bar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.btn {
+  padding: 7px 12px;
+  background: #ddd;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.primary {
+  background: #2563eb;
+  color: white;
+}
+
+.success {
+  background: #16a34a;
+  color: white;
+}
+
+.danger {
+  background: #dc2626;
+  color: white;
+}
+
+.rutas-list {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: white;
+  padding: 10px;
+  border-radius: 6px;
+  max-height: 200px;
+  overflow: auto;
+  width: 220px;
+}
+
+.ruta-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px;
+  border-bottom: 1px solid #ccc;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+}
