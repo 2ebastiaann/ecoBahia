@@ -1,9 +1,16 @@
-// Variables de colores verdosos
+// Variables de colores
 $green-primary: #10b981;
 $green-secondary: #059669;
 $green-light: #d1fae5;
 $emerald: #34d399;
 $teal: #14b8a6;
+
+// Colores oscuros
+$dark-bg: #0f172a;
+$dark-card: #1e293b;
+$dark-card-hover: #334155;
+$dark-text: #e2e8f0;
+$dark-text-muted: #94a3b8;
 
 // Animaciones
 @keyframes slideInLeft {
@@ -41,25 +48,27 @@ $teal: #14b8a6;
 
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
   }
   50% {
-    box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.7);
   }
 }
 
 .sidebar {
   width: 256px;
   height: 100vh;
-  background: linear-gradient(180deg, #065f46 0%, #047857 50%, #059669 100%);
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
   color: white;
   display: flex;
   flex-direction: column;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
-  box-shadow: 4px 0 24px rgba(16, 185, 129, 0.15);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5), 
+              inset -1px 0 0 rgba(16, 185, 129, 0.2);
   position: relative;
   overflow: hidden;
+  border-right: 1px solid rgba(16, 185, 129, 0.2);
 
   &::before {
     content: '';
@@ -68,7 +77,7 @@ $teal: #14b8a6;
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 20% 50%, rgba(52, 211, 153, 0.1) 0%, transparent 50%);
+    background: radial-gradient(circle at 20% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
     pointer-events: none;
   }
 
@@ -79,13 +88,14 @@ $teal: #14b8a6;
 
   .logo-section {
     padding: 1.5rem;
-    border-bottom: 1px solid rgba(52, 211, 153, 0.2);
+    border-bottom: 1px solid rgba(16, 185, 129, 0.2);
     display: flex;
     align-items: center;
     gap: 0.75rem;
     animation: slideDown 0.6s ease-out;
     position: relative;
     z-index: 1;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%);
 
     .logo {
       width: 48px;
@@ -97,7 +107,7 @@ $teal: #14b8a6;
       justify-content: center;
       font-weight: bold;
       font-size: 1.5rem;
-      box-shadow: 0 8px 16px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 8px 16px rgba(16, 185, 129, 0.5);
       transition: all 0.3s ease;
       animation: glow 3s ease-in-out infinite;
 
@@ -111,7 +121,7 @@ $teal: #14b8a6;
         font-size: 1.25rem;
         font-weight: bold;
         margin: 0;
-        background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%);
+        background: linear-gradient(90deg, $emerald 0%, $green-primary 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -119,7 +129,7 @@ $teal: #14b8a6;
 
       p {
         font-size: 0.75rem;
-        color: rgba(167, 243, 208, 0.8);
+        color: $dark-text-muted;
         margin: 0;
       }
     }
@@ -139,7 +149,7 @@ $teal: #14b8a6;
       gap: 0.75rem;
       background: none;
       border: none;
-      color: white;
+      color: $dark-text;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       text-align: left;
@@ -162,14 +172,16 @@ $teal: #14b8a6;
         transform: translateY(-50%);
         width: 4px;
         height: 0;
-        background: $emerald;
+        background: linear-gradient(180deg, $emerald 0%, $green-primary 100%);
         transition: height 0.3s ease;
         border-radius: 0 4px 4px 0;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
       }
 
       &:hover {
-        background: rgba(52, 211, 153, 0.15);
+        background: rgba(16, 185, 129, 0.15);
         transform: translateX(4px);
+        color: $emerald;
         
         &::before {
           height: 60%;
@@ -177,22 +189,33 @@ $teal: #14b8a6;
       }
 
       &.active {
-        background: linear-gradient(90deg, rgba(16, 185, 129, 0.3) 0%, rgba(52, 211, 153, 0.2) 100%);
+        background: linear-gradient(90deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.1) 100%);
         border-left: 4px solid $emerald;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        color: $emerald;
 
         i {
           animation: pulse-soft 2s ease-in-out infinite;
         }
+      }
+
+      i {
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+      }
+
+      &:hover i {
+        transform: scale(1.1);
       }
     }
   }
 
   .user-section {
     padding: 1rem;
-    border-top: 1px solid rgba(52, 211, 153, 0.2);
+    border-top: 1px solid rgba(16, 185, 129, 0.2);
     position: relative;
     z-index: 1;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%);
 
     .user-info {
       display: flex;
@@ -201,12 +224,14 @@ $teal: #14b8a6;
       margin-bottom: 0.75rem;
       padding: 0.75rem;
       border-radius: 12px;
-      background: rgba(16, 185, 129, 0.15);
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
       transition: all 0.3s ease;
 
       &:hover {
-        background: rgba(16, 185, 129, 0.25);
+        background: rgba(16, 185, 129, 0.2);
         transform: translateY(-2px);
+        border-color: rgba(16, 185, 129, 0.3);
       }
 
       .user-avatar {
@@ -217,12 +242,14 @@ $teal: #14b8a6;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+        box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4);
         font-weight: 600;
+        border: 2px solid rgba(16, 185, 129, 0.3);
       }
 
       span {
         font-weight: 500;
+        color: $dark-text;
       }
     }
 
@@ -240,12 +267,12 @@ $teal: #14b8a6;
       justify-content: center;
       gap: 0.5rem;
       font-weight: 500;
-      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
 
       &:hover {
         background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
         transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+        box-shadow: 0 6px 16px rgba(220, 38, 38, 0.5);
       }
 
       &:active {

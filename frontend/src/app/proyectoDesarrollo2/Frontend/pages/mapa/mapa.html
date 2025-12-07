@@ -50,24 +50,48 @@
   </div>
 
   <!-- Modal -->
-  <div class="modal-overlay" *ngIf="mostrarModalNombreRuta">
-    <div class="modal">
+  <div class="modal-overlay" *ngIf="mostrarModalNombreRuta" (click)="mostrarModalNombreRuta = false">
+    <div class="modal" (click)="$event.stopPropagation()">
       <h3>Crear Nueva Ruta</h3>
 
       <div class="modal-form">
-        <label>Nombre de la ruta</label>
-        <input type="text" [(ngModel)]="nombreRuta" placeholder="Ej: Ruta Centro" class="form-input">
+        <!-- Nombre de la ruta -->
+        <div class="form-group">
+          <label>Nombre de la ruta</label>
+          <input 
+            type="text" 
+            [(ngModel)]="nombreRuta" 
+            placeholder="Ej: Ruta Centro - Zona Norte" 
+            class="form-input"
+            autofocus>
+        </div>
 
-        <label style="margin-top:15px;">Color de la ruta</label>
-        <div style="display:flex; align-items:center; gap:10px; margin-top:8px;">
-          <input type="color" [(ngModel)]="rutaColor" class="color-picker" />
-          <div [style.background]="rutaColor" class="color-preview"></div>
+        <!-- Color de la ruta -->
+        <div class="form-group">
+          <label>Color de la ruta</label>
+          <div class="color-picker-group">
+            <input 
+              type="color" 
+              [(ngModel)]="rutaColor" 
+              class="color-picker" />
+            <div 
+              [style.background]="rutaColor" 
+              class="color-preview">
+            </div>
+            <div class="color-info">
+              <span class="color-value">{{ rutaColor }}</span>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="modal-buttons">
-        <button class="btn btn-cancel" (click)="mostrarModalNombreRuta = false">Cancelar</button>
-        <button class="btn btn-primary" (click)="confirmarNombreRuta()">Comenzar a Dibujar</button>
+        <button class="btn btn-cancel" (click)="mostrarModalNombreRuta = false">
+          Cancelar
+        </button>
+        <button class="btn btn-primary" (click)="confirmarNombreRuta()">
+          Comenzar a Dibujar
+        </button>
       </div>
     </div>
   </div>
