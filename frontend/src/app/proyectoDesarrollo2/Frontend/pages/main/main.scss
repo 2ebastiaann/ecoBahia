@@ -265,6 +265,15 @@ $teal: #14b8a6;
   }
 }
 
+/* preview map container */
+#mainMapPreview {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 // 🔥 Fuerza a Leaflet a respetar límites del contenedor
 .leaflet-container {
   width: 100% !important;

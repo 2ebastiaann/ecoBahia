@@ -1,6 +1,7 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { LeafletMapService } from '../../services/map.service';
 
 import { SidebarComponent } from '../../components/sidebar/sidebar';
 import { HeaderComponent } from '../../components/header/header';
@@ -50,9 +51,19 @@ export class MainComponent implements AfterViewInit {
     { id: 2, tipo: 'success', titulo: 'Ruta Este completada exitosamente', tiempo: 'Hace 1 hora' }
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private leaflet: LeafletMapService) {}
 
   ngAfterViewInit(): void {}
+
+  // Inicializar el mapa pequeño en la interfaz principal
+  ngAfterViewChecked(): void {
+    // intenta inicializar el mapa preview si el contenedor existe
+    try {
+      this.leaflet.initMap('mainMapPreview');
+    } catch (e) {
+      // ignorar si no está montado aún
+    }
+  }
 
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;
@@ -80,7 +91,8 @@ export class MainComponent implements AfterViewInit {
   }
 
   abrirMapa() {
-    this.router.navigate(['/mapa']);
+    // Abrir el mapa y solicitar creación para que el modal aparezca
+    this.router.navigate(['/mapa'], { queryParams: { create: '1' } });
   }
 
   verVehiculosActivos() {}

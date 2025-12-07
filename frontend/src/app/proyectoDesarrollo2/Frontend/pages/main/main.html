@@ -25,6 +25,19 @@
       <!-- Dynamic content loaded by the router -->
       <router-outlet></router-outlet>
 
+      <!-- Small map preview box inside main interface -->
+      <div class="map-card" style="max-height:480px; height:480px;">
+        <div class="map-header">
+          <h3><i class="icon-map"></i> Mapa (vista previa)</h3>
+          <div class="map-controls">
+          </div>
+        </div>
+
+        <div class="map-wrapper">
+          <div id="mainMapPreview"></div>
+        </div>
+      </div>
+
     </div>
 
   </main>

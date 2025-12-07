@@ -11,7 +11,7 @@ export class LeafletMapService {
   private drawing = false;
   private currentPoints: L.LatLng[] = [];
   private currentPolyline: L.Polyline | null = null;
-  private pointMarkers: L.Marker[] = [];
+  private pointMarkers: (L.Marker | L.CircleMarker)[] = [];
 
   private routesLayers: Record<string, L.Layer> = {};
 
@@ -39,7 +39,7 @@ export class LeafletMapService {
   // ===========================================================
   //   ACTIVAR MODO DIBUJO (CLICK-CLICK COMO TU AMIGO)
   // ===========================================================
-  startDrawing(onFinish: (coords: [number, number][]) => void) {
+  startDrawing(onFinish: (coords: [number, number][]) => void, color: string = '#2563eb') {
     if (!this.map) return;
 
     this.drawing = true;
@@ -52,14 +52,20 @@ export class LeafletMapService {
       const point = e.latlng;
       this.currentPoints.push(point);
 
-      const marker = L.marker(point).addTo(this.map!);
+      const marker = L.circleMarker(point, {
+        radius: 6,
+        color: color,
+        fillColor: color,
+        fillOpacity: 1,
+        weight: 2
+      }).addTo(this.map!);
       this.pointMarkers.push(marker);
 
       if (this.currentPolyline) {
         this.currentPolyline.setLatLngs(this.currentPoints);
       } else {
         this.currentPolyline = L.polyline(this.currentPoints, {
-          color: '#2563eb',
+          color: color,
           weight: 4
         }).addTo(this.map!);
       }

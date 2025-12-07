@@ -1,43 +1,74 @@
-<div class="map-wrapper">
-  
-  <div class="top-bar">
-    <button class="btn" (click)="router.navigate(['/dashboard'])">⬅ Volver</button>
+<div class="map-page-container">
+  <!-- Header bar with buttons -->
+  <div class="map-header-bar">
+    <div class="header-left">
+      <button class="btn btn-back" (click)="router.navigate(['/dashboard'])">⬅ Volver</button>
+    </div>
 
-    <button class="btn primary" (click)="empezarCrearRuta()" *ngIf="!creandoRuta">
-      ➕ Crear Ruta
-    </button>
+    <div class="header-center">
+      <h2>Gestor de Rutas</h2>
+    </div>
 
-    <button class="btn success" (click)="guardarRuta()" *ngIf="creandoRuta">
-      ✔ Guardar Ruta
-    </button>
+    <div class="header-right">
+      <button class="btn btn-primary" (click)="empezarCrearRuta()" *ngIf="!creandoRuta">
+        ➕ Crear Ruta
+      </button>
 
-    <button class="btn danger" (click)="limpiarMapa()">
-      🗑 Limpiar
-    </button>
+      <button class="btn btn-success" (click)="guardarRuta()" *ngIf="creandoRuta">
+        ✔ Guardar Ruta
+      </button>
+
+      <button class="btn btn-danger" (click)="limpiarMapa()" *ngIf="creandoRuta">
+        🗑 Limpiar
+      </button>
+    </div>
   </div>
 
-  <div id="mapContainer"></div>
+  <!-- Main content area: map + sidebar -->
+  <div class="map-content-wrapper">
+    <!-- Map container (left side, full height) -->
+    <div class="map-section">
+      <div id="mapContainer"></div>
+    </div>
 
-  <!-- Modal -->
-  <div class="modal-overlay" *ngIf="mostrarModalNombreRuta">
-    <div class="modal">
-      <h3>Nombre de la ruta</h3>
-
-      <input type="text" [(ngModel)]="nombreRuta" placeholder="Ej: Ruta Norte">
-
-      <div class="modal-buttons">
-        <button class="btn danger" (click)="mostrarModalNombreRuta = false">Cancelar</button>
-        <button class="btn primary" (click)="confirmarNombreRuta()">Comenzar</button>
+    <!-- Sidebar with routes list (right side) -->
+    <div class="routes-sidebar">
+      <h3>Rutas Registradas</h3>
+      <div class="routes-list-container">
+        <div class="ruta-item" *ngFor="let r of rutas">
+          <div class="ruta-info">
+            <div class="ruta-name">{{ r.nombre_ruta }}</div>
+            <div class="ruta-color" [style.background]="r.color_hex || '#10b981'"></div>
+          </div>
+          <button class="btn-view" (click)="mostrarRuta(r)">Ver</button>
+        </div>
+        <div *ngIf="rutas.length === 0" class="no-routes">
+          No hay rutas registradas aún
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="rutas-list">
-    <h3>Rutas guardadas</h3>
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="mostrarModalNombreRuta">
+    <div class="modal">
+      <h3>Crear Nueva Ruta</h3>
 
-    <div class="ruta-item" *ngFor="let r of rutas">
-      <span>{{ r.nombre_ruta }}</span>
-      <button class="btn small" (click)="mostrarRuta(r)">Ver</button>
+      <div class="modal-form">
+        <label>Nombre de la ruta</label>
+        <input type="text" [(ngModel)]="nombreRuta" placeholder="Ej: Ruta Centro" class="form-input">
+
+        <label style="margin-top:15px;">Color de la ruta</label>
+        <div style="display:flex; align-items:center; gap:10px; margin-top:8px;">
+          <input type="color" [(ngModel)]="rutaColor" class="color-picker" />
+          <div [style.background]="rutaColor" class="color-preview"></div>
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="btn btn-cancel" (click)="mostrarModalNombreRuta = false">Cancelar</button>
+        <button class="btn btn-primary" (click)="confirmarNombreRuta()">Comenzar a Dibujar</button>
+      </div>
     </div>
   </div>
 

@@ -19,12 +19,13 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
   // ====== VARIABLES PARA EL MODAL ======
   mostrarModalNombreRuta = false;
   nombreRuta = '';
+  rutaColor = '#2563eb';
 
   // ====== MODO CREACIÓN ======
   creandoRuta = false;
   puntosRuta: L.LatLng[] = [];
   polyline: L.Polyline | null = null;
-  marcadores: L.Marker[] = [];
+  marcadores: (L.Marker | L.CircleMarker)[] = [];
 
   // ====== RUTAS DEL BACKEND ======
   rutas: any[] = [];
@@ -54,11 +55,10 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
   ngAfterViewInit(): void {
     this.initMap();
     setTimeout(() => this.map.invalidateSize(), 200);
-    // Si se solicitó crear ruta antes de inicializar, activamos el modo dibujo ahora
+    // Si se solicitó crear ruta antes de inicializar, mostramos el modal
+    // para que el usuario ingrese nombre y color antes de dibujar
     if (this.createRequested) {
-      // Iniciar modo creación (sin mostrar el modal)
-      this.creandoRuta = true;
-      this.limpiarMapa();
+      this.mostrarModalNombreRuta = true;
     }
   }
 
@@ -107,11 +107,18 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
     const p = e.latlng;
     this.puntosRuta.push(p);
 
-    const m = L.marker(p).addTo(this.map);
-    this.marcadores.push(m);
+    // Usar un marcador circular bonito en lugar del icono por defecto
+    const circle = L.circleMarker(p, {
+      radius: 6,
+      color: this.rutaColor,
+      fillColor: this.rutaColor,
+      fillOpacity: 1,
+      weight: 2
+    }).addTo(this.map);
+    this.marcadores.push(circle);
 
     if (!this.polyline) {
-      this.polyline = L.polyline(this.puntosRuta, { color: '#2563eb', weight: 4 })
+      this.polyline = L.polyline(this.puntosRuta, { color: this.rutaColor, weight: 4 })
         .addTo(this.map);
     } else {
       this.polyline.setLatLngs(this.puntosRuta);
@@ -153,17 +160,30 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
 
     const payload = {
       nombre_ruta: this.nombreRuta,
-      color_hex: '#2563eb',
+      color_hex: this.rutaColor,
       shape
     };
 
     this.api.crearRuta(payload).subscribe({
-      next: () => {
+      next: (res) => {
+        console.log('crearRuta response', res);
+        // Verificar estado del servidor antes de crear
+        this.api.getRutas().subscribe({ next: (before) => console.log('rutas before create', before), error: e => console.warn('getRutas before failed', e) });
         alert("Ruta creada exitosamente ✔");
+        // Stop creation and reset UI like the vehículos flow
         this.creandoRuta = false;
+        this.limpiarMapa();
+        this.nombreRuta = '';
+        this.rutaColor = '#2563eb';
+        this.mostrarModalNombreRuta = false;
         this.cargarRutas();
+        // Verificar estado del servidor después de crear
+        this.api.getRutas().subscribe({ next: (after) => console.log('rutas after create', after), error: e => console.warn('getRutas after failed', e) });
       },
-      error: (err) => console.error("Error guardando ruta:", err)
+      error: (err) => {
+        console.error("Error guardando ruta:", err);
+        alert('Error al guardar la ruta');
+      }
     });
   }
 
@@ -177,12 +197,19 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
       (c: [number, number]) => L.latLng(c[1], c[0])
     );
 
-    this.polyline = L.polyline(coords, { color: r.color_hex || '#10b981' })
+    const color = r.color_hex || '#10b981';
+    this.polyline = L.polyline(coords, { color: color })
       .addTo(this.map);
 
     coords.forEach((p: L.LatLng) => {
-      const m = L.marker(p).addTo(this.map);
-      this.marcadores.push(m);
+      const c = L.circleMarker(p, {
+        radius: 6,
+        color: color,
+        fillColor: color,
+        fillOpacity: 1,
+        weight: 2
+      }).addTo(this.map);
+      this.marcadores.push(c);
     });
 
     this.map.fitBounds(this.polyline.getBounds(), { padding: [40, 40] });
