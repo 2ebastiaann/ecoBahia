@@ -16,7 +16,7 @@ interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3007/api/usuarios';
+  private apiUrl = 'https://ecobahia.eleueleo.com/api/usuarios';
 
   constructor(private http: HttpClient) {}
 
@@ -32,7 +32,7 @@ export class AuthService {
     localStorage.setItem('token', token);
   }
 
-  obtenerToken(): string | null {
+  obtenerToken(): string | null { 
     return localStorage.getItem('token');
   }
 
