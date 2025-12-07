@@ -45,7 +45,7 @@ jobs:
       - name: 🧾 Ver contenido preparado
         run: ls -R deploy-frontend
 
-      # ----------------- LIMPIAR SERVIDOR -----------------
+      # ----------------- LIMPIAR SOLO EL FRONTEND -----------------
       - name: 🧹 Limpiar carpeta frontend en servidor
         uses: appleboy/ssh-action@v1
         with:
@@ -54,9 +54,9 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
           script: |
-            rm -rf /var/www/jorge_site/*
-            mkdir -p /var/www/jorge_site
-            echo "✔ Carpeta del servidor limpia"
+            mkdir -p /var/www/jorge_site/frontend
+            rm -rf /var/www/jorge_site/frontend/*
+            echo "✔ Carpeta del frontend limpia"
 
       # ----------------- SUBIR BUILD -----------------
       - name: 📤 Subir frontend ecoBahia al servidor
@@ -67,7 +67,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
           source: "deploy-frontend/*"
-          target: "/var/www/jorge_site/"
+          target: "/var/www/jorge_site/frontend/"
           overwrite: true
 
       # ----------------- PERMISOS Y FIN -----------------
@@ -79,5 +79,6 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
           script: |
-            chmod -R 755 /var/www/jorge_site
-            echo "✔ Deploy ecoBahia completado correctamente"
+            chmod -R 755 /var/www/jorge_site/frontend
+            echo "✔ Deploy ecoBahia FRONTEND completado correctamente"
+
