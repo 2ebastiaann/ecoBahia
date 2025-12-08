@@ -52,7 +52,6 @@ export class Register {
         }
       },
       error: err => {
-        console.error('Error en registro:', err);
         this.notificationService.error('Error al registrar usuario');
       }
     });
@@ -80,17 +79,16 @@ export class Register {
 
   checkPasswordStrength(): void {
     const p = this.password;
-    let strength = 0;
+    let types = 0;
 
-    if (p.length >= 8) strength++;
-    if (p.length >= 12) strength++;
-    if (/[A-Z]/.test(p)) strength++;
-    if (/[a-z]/.test(p)) strength++;
-    if (/\d/.test(p)) strength++;
-    if (/[!@#$%^&*(),.?":{}|<>]/.test(p)) strength++;
+    // Contar tipos de caracteres presentes
+    if (/\d/.test(p)) types++;           // números
+    if (/[a-z]/.test(p) || /[A-Z]/.test(p)) types++; // letras
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(p)) types++;    // símbolos
 
-    if (strength <= 2) this.passwordStrength = 'weak';
-    else if (strength <= 4) this.passwordStrength = 'medium';
+    // Asignar fortaleza basada en tipos
+    if (types <= 1) this.passwordStrength = 'weak';
+    else if (types === 2) this.passwordStrength = 'medium';
     else this.passwordStrength = 'strong';
   }
 
@@ -108,7 +106,7 @@ export class Register {
 
   isFormValid(): boolean {
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
-    const passwordValid = this.password.length >= 8;
+    const passwordValid = this.password.length >= 6;
     const match = this.password === this.confirmPassword;
     return emailValid && passwordValid && match && this.acceptTerms;
   }

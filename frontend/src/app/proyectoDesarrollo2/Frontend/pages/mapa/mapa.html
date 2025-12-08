@@ -13,7 +13,7 @@
     </div>
 
     <div class="header-center">
-      <h2>Gestor de Rutas</h2>
+      <h2>🗺️ GESTOR DE RUTAS</h2>
     </div>
 
     <div class="header-right">
@@ -64,6 +64,9 @@
 
           <div class="ruta-info">
             <div class="ruta-name">{{ r.nombre_ruta }}</div>
+            <div class="ruta-points">
+              {{ (r.shape?.coordinates?.length || 0) }} {{ ((r.shape?.coordinates?.length || 0) === 1) ? 'punto' : 'puntos' }}
+            </div>
             <div class="ruta-color"
                  [style.background]="r.color_hex || '#10b981'">
             </div>
@@ -72,7 +75,7 @@
           <div class="ruta-actions">
             <button class="btn-view"
                     (click)="mostrarRuta(r)">
-              Ver
+              🔍 Ver
             </button>
           </div>
 
@@ -110,28 +113,6 @@
                  placeholder="Ej: Calle 6 - Zona Centro"
                  class="form-input"
                  autofocus>
-        </div>
-
-        <!-- Color -->
-        <div class="form-group">
-          <label>Color de la ruta</label>
-
-          <div class="color-picker-group">
-
-            <input type="color"
-                   class="color-picker"
-                   [(ngModel)]="rutaColor">
-
-            <div class="color-preview"
-                 [style.background]="rutaColor">
-            </div>
-
-            <div class="color-info">
-              <span>{{ rutaColor }}</span>
-            </div>
-
-          </div>
-
         </div>
 
       </div>

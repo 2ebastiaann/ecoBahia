@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import * as L from 'leaflet';
@@ -28,7 +28,7 @@ interface Aviso {
   templateUrl: './main.html',
   styleUrls: ['./main.scss']
 })
-export class MainComponent implements AfterViewInit {
+export class MainComponent implements AfterViewInit, OnDestroy {
 
   sidebarOpen = true;
   activeSection = 'inicio';
@@ -36,6 +36,9 @@ export class MainComponent implements AfterViewInit {
   currentRoute = '';
 
   private previewMap?: L.Map;
+  private mapInitialized = false;
+  private mapInitInProgress = false;
+  private mapInitTimeout?: any;
 
   menuItems = [
     { id: 'inicio', label: 'Inicio', icon: 'icon-home' },
@@ -64,47 +67,103 @@ export class MainComponent implements AfterViewInit {
         this.currentRoute = event.urlAfterRedirects;
 
         if (this.currentRoute === '/main') {
-          setTimeout(() => this.initPreviewMap(), 50);
+          // Limpiar timeout anterior si existe
+          if (this.mapInitTimeout) {
+            clearTimeout(this.mapInitTimeout);
+          }
+          // Reiniciar mapa solo si se vuelve a /main desde otra ruta
+          this.mapInitialized = false;
+          this.mapInitTimeout = setTimeout(() => this.initPreviewMap(), 100);
         }
       });
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    this.mapInitTimeout = setTimeout(() => {
       if (this.currentRoute === '/main') {
         this.initPreviewMap();
       }
-    }, 50);
+    }, 100);
+  }
+
+  ngOnDestroy(): void {
+    if (this.mapInitTimeout) {
+      clearTimeout(this.mapInitTimeout);
+    }
+    this.destroyMap();
   }
 
   // ============================
   // ⭐  FIX DEFINITIVO LEAFLET
   // ============================
-  private initPreviewMap(): void {
-    const container = document.getElementById('mainMapPreview') as any;
-    if (!container) return;
-
-    // 🧨 1. Si ya existe un map, eliminarlo completamente
+  private destroyMap(): void {
     if (this.previewMap) {
-      this.previewMap.off();   // quitar listeners
-      this.previewMap.remove();  
+      try {
+        this.previewMap.off();
+        this.previewMap.remove();
+      } catch (e) {
+        // Ignorar errores al destruir
+      }
       this.previewMap = undefined;
     }
+    this.mapInitialized = false;
+    this.mapInitInProgress = false;
+  }
 
-    // 🧨 2. Leaflet guarda internamente el ID del contenedor → resetearlo
-    if (container._leaflet_id) {
-      container._leaflet_id = null;
+  private initPreviewMap(): void {
+    // Evitar múltiples inicializaciones simultáneas
+    if (this.mapInitInProgress) {
+      return;
     }
 
-    // 🟢 3. Crear mapa sin errores
-    this.previewMap = L.map(container, {
-      center: [3.8773, -77.0277],
-      zoom: 13
-    });
+    // Si ya está inicializado, no reiniciar
+    if (this.mapInitialized && this.previewMap) {
+      return;
+    }
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19
-    }).addTo(this.previewMap);
+    this.mapInitInProgress = true;
+
+    try {
+      const container = document.getElementById('mainMapPreview') as any;
+      if (!container) {
+        this.mapInitInProgress = false;
+        return;
+      }
+
+      // 1. Destruir mapa anterior si existe
+      if (this.previewMap) {
+        try {
+          this.previewMap.off();
+          this.previewMap.remove();
+        } catch (e) {
+          // Ignorar errores
+        }
+        this.previewMap = undefined;
+      }
+
+      // 2. Limpiar referencias de Leaflet en el contenedor
+      if (container._leaflet_id !== undefined) {
+        container._leaflet_id = null;
+      }
+
+      // 3. Crear nuevo mapa
+      this.previewMap = L.map(container, {
+        center: [3.8773, -77.0277],
+        zoom: 13
+      });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19
+      }).addTo(this.previewMap);
+
+      this.mapInitialized = true;
+    } catch (e) {
+      // Ignorar errores en inicialización
+      this.mapInitialized = false;
+      this.previewMap = undefined;
+    } finally {
+      this.mapInitInProgress = false;
+    }
   }
 
   toggleSidebar() {

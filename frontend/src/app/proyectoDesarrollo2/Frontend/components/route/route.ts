@@ -30,7 +30,6 @@ export class CreateRouteComponent {
   };
 
   startDrawing() {
-    console.log("🔥 Ejecutando startDrawing", this.data);
     this.startDraw.emit(this.data);
     this.close.emit();
     this.isOpen = false;

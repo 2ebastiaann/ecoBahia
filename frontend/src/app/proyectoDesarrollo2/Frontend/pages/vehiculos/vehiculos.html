@@ -1,5 +1,15 @@
 <app-notification-container></app-notification-container>
 
+<app-confirm-dialog 
+  [isOpen]="showDeleteConfirm"
+  title="Eliminar Vehículo"
+  [message]="'¿Deseas eliminar el vehículo ' + (vehicleToDelete?.placa || '') + '? Esta acción no se puede deshacer.'"
+  confirmText="Eliminar"
+  cancelText="Cancelar"
+  (confirmed)="confirmDelete()"
+  (cancelled)="cancelDelete()">
+</app-confirm-dialog>
+
 <div class="vehicles-container">
 
   <header class="header">
@@ -19,7 +29,7 @@
           <th>Marca</th>
           <th>Modelo</th>
           <th>Activo</th>
-          <th>Acciones</th>
+          <th *ngIf="esAdmin || esConductor">Acciones</th>
         </tr>
       </thead>
 
@@ -30,7 +40,7 @@
           <td>{{ vehiculo.modelo }}</td>
           <td>{{ vehiculo.activo ? 'Sí' : 'No' }}</td>
 
-          <td>
+          <td *ngIf="esAdmin || esConductor">
             <!-- Admin y Conductor pueden editar -->
             <button (click)="editVehicle(vehiculo)" *ngIf="esAdmin || esConductor">
               ✏️ Editar

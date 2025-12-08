@@ -6,6 +6,7 @@ import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
 import { NotificationContainerComponent } from '../../components/notification-container/notification-container.component';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { environment } from '../../../environments/environment';
 
 interface Vehiculo {
@@ -21,7 +22,7 @@ interface Vehiculo {
   standalone: true,
   templateUrl: './vehiculos.html',
   styleUrls: ['./vehiculos.scss'],
-  imports: [CommonModule, ReactiveFormsModule, NotificationContainerComponent]
+  imports: [CommonModule, ReactiveFormsModule, NotificationContainerComponent, ConfirmDialogComponent]
 })
 export class VehiculosComponent implements OnInit {
 
@@ -30,6 +31,9 @@ export class VehiculosComponent implements OnInit {
   showModal = false;
   isEditMode = false;
   selectedVehicle?: Vehiculo;
+
+  showDeleteConfirm = false;
+  vehicleToDelete?: Vehiculo;
 
   usuario: any;
   esAdmin = false;
@@ -55,8 +59,6 @@ export class VehiculosComponent implements OnInit {
 
   ngOnInit(): void {
     this.usuario = this.auth.obtenerUsuario();
-    console.log("Usuario:", this.usuario);
-    console.log("ID rol recibido:", this.usuario?.id_rol);
 
     if (this.usuario) {
       this.esAdmin = this.usuario.id_rol === 1;
@@ -72,7 +74,7 @@ export class VehiculosComponent implements OnInit {
       next: (res: any) => {
         this.vehicles = res.data || [];
       },
-      error: err => console.error('Error cargando vehículos:', err)
+      error: err => {}
     });
   }
 
@@ -97,18 +99,33 @@ export class VehiculosComponent implements OnInit {
   deleteVehicle(id: string): void {
     if (!this.esAdmin && !this.esConductor) return;
 
-    if (!confirm('¿Eliminar este vehículo?')) return;
+    const vehicle = this.vehicles.find(v => v.id === id);
+    if (!vehicle) return;
 
-    this.api.eliminarVehiculo(id).subscribe({
+    this.vehicleToDelete = vehicle;
+    this.showDeleteConfirm = true;
+  }
+
+  confirmDelete(): void {
+    if (!this.vehicleToDelete?.id) return;
+
+    this.api.eliminarVehiculo(this.vehicleToDelete.id).subscribe({
       next: () => {
         this.notificationService.success('Vehículo eliminado');
+        this.showDeleteConfirm = false;
+        this.vehicleToDelete = undefined;
         this.loadVehicles();
       },
       error: err => {
-        console.error(err);
         this.notificationService.error('Error al eliminar vehículo');
+        this.showDeleteConfirm = false;
       }
     });
+  }
+
+  cancelDelete(): void {
+    this.showDeleteConfirm = false;
+    this.vehicleToDelete = undefined;
   }
 
   closeModal(): void {
@@ -132,10 +149,10 @@ export class VehiculosComponent implements OnInit {
           this.closeModal();
           this.loadVehicles();
         },
-        error: err => {
-          console.error("Error editando:", err);
-          this.notificationService.error('Error al actualizar vehículo');
-        }
+      error: err => {
+        console.error("Error editando:", err);
+        this.notificationService.error('Error al actualizar vehículo');
+      }
       });
       return;
     }
@@ -150,7 +167,6 @@ export class VehiculosComponent implements OnInit {
         this.loadVehicles();
       },
       error: err => {
-        console.error("Error creando vehículo:", err);
         this.notificationService.error('Error al crear vehículo');
       }
     });

@@ -54,6 +54,30 @@ $font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'H
   }
 }
 
+@keyframes routePointPulse {
+  0% {
+    r: 8px;
+    filter: drop-shadow(0 0 2px rgba(16, 185, 129, 0.4));
+  }
+  50% {
+    r: 10px;
+    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.8));
+  }
+  100% {
+    r: 8px;
+    filter: drop-shadow(0 0 2px rgba(16, 185, 129, 0.4));
+  }
+}
+
+@keyframes routePointGlow {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
 // ========================================
 // MAP PAGE LAYOUT
 // ========================================
@@ -97,15 +121,17 @@ $font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'H
 
   h2 {
     margin: 0;
-    font-size: 1.75rem;
+    font-size: 1.875rem;
     color: $dark-text;
-    font-weight: 700;
+    font-weight: 800;
     font-family: $font-family;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
     background: linear-gradient(135deg, $emerald 0%, $green-primary 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 }
 
@@ -364,7 +390,7 @@ $font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'H
   .ruta-info {
     display: flex;
     align-items: center;
-    gap: 0.875rem;
+    gap: 0.5rem;
     flex: 1;
     min-width: 0;
     overflow: hidden;
@@ -378,6 +404,25 @@ $font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'H
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
                 inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  }
+
+  .ruta-points {
+    font-size: 0.78rem;
+    color: $dark-text-muted;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(16,185,129,0.06);
+    padding: 0.18rem 0.45rem;
+    border-radius: 999px;
+    margin-left: 0.25rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    max-width: 88px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .ruta-name {
@@ -767,4 +812,63 @@ $font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'H
       font-size: 1.125rem;
     }
   }
+}
+
+// ========================================
+// ROUTE POINT STYLES (Puntos en el mapa)
+// ========================================
+
+.route-point {
+  animation: routePointPulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  
+  circle {
+    animation: routePointGlow 2s ease-in-out infinite;
+  }
+}
+
+.route-pin-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  transform: translateY(-6px);
+  font-size: 20px;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  animation: routePointPulse 2s ease-in-out infinite;
+}
+
+.route-pin {
+  display: inline-block;
+  line-height: 1;
+  transform: translateY(-2px);
+  filter: drop-shadow(0 4px 10px rgba(16,185,129,0.35));
+}
+
+// SVG-specific styling for the new pin
+.route-pin-svg .route-pin-svg-el {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform-origin: 50% 40%;
+}
+
+@keyframes pinPulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 2px 6px rgba(16,185,129,0.28));
+  }
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 6px 18px rgba(16,185,129,0.55));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 2px 6px rgba(16,185,129,0.28));
+  }
+}
+
+.route-pin-icon.route-pin-svg .route-pin-svg-el {
+  animation: pinPulse 2.4s ease-in-out infinite;
 }

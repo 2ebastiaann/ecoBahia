@@ -23,13 +23,12 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
   // Modal
   mostrarModalNombreRuta = false;
   nombreRuta = '';
-  rutaColor = '#2563eb';
 
   // Crear rutas manualmente con puntos
   creandoRuta = false;
   puntosRuta: L.LatLng[] = [];
   polyline: L.Polyline | null = null;
-  marcadores: L.CircleMarker[] = [];
+  marcadores: L.Marker[] = [];
 
   // rutas cargadas
   rutas: any[] = [];
@@ -84,6 +83,30 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
     this.map.on('click', (e: L.LeafletMouseEvent) => this.onMapClick(e));
   }
 
+  // Genera HTML SVG para el pin de ruta. Color en formato HEX y tamaño en px (cuadrado).
+  private makePinHtml(color: string, size = 36): string {
+    // SVG: pin con gradiente y centro blanco para destacar, escala responsiva al tamaño dado
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" class="route-pin-svg-el">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="${color}" stop-opacity="1" />
+            <stop offset="100%" stop-color="#7af3bf" stop-opacity="0.95" />
+          </linearGradient>
+          <filter id="f" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="${color}" flood-opacity="0.5" />
+          </filter>
+        </defs>
+        <!-- pin shape -->
+        <path d="M12 2C8.686 2 6 4.686 6 8c0 4.667 6 12 6 12s6-7.333 6-12c0-3.314-2.686-6-6-6z" fill="url(#g)" filter="url(#f)"/>
+        <!-- inner circle -->
+        <circle cx="12" cy="8" r="2.6" fill="#ffffff" />
+      </svg>
+    `;
+
+    return svg;
+  }
+
   // ===================================================
   // Cargar rutas desde API
   // ===================================================
@@ -117,17 +140,9 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
           };
         });
         
-        // Log detallado de cada ruta
-        console.log("📥 Rutas cargadas del servidor:", lista.length);
-        this.rutas.forEach((r, i) => {
-          console.log(`  Ruta ${i}: "${r.nombre_ruta}"`);
-          console.log(`    - Puntos: ${r.shape?.coordinates?.length || 0}`);
-          console.log(`    - color_hex: ${r.color_hex}`);
-          console.log(`    - Color que se mostrará: ${r.color_hex || '#10b981 (verde por defecto)'}`);
-          console.log(`    - Objeto completo:`, r);
-        });
+
       },
-      error: (err: any) => console.error("❌ Error cargando rutas:", err)
+      error: (err: any) => {}
     });
   }
 
@@ -159,20 +174,22 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
     const punto = e.latlng;
     this.puntosRuta.push(punto);
 
-    const marker = L.circleMarker(punto, {
-      radius: 6,
-      color: this.rutaColor,
-      fillColor: this.rutaColor,
-      fillOpacity: 1,
-      weight: 2
-    }).addTo(this.map);
+    // Usar SVG personalizado para que el pin sea más notable y con la estética del proyecto
+    const pinColor = '#10b981';
+    const pinHtml = this.makePinHtml(pinColor, 36);
+    const icon = L.divIcon({ html: pinHtml, className: 'route-pin-icon route-pin-svg', iconSize: [36, 36], iconAnchor: [18, 36] });
+    const marker = L.marker(punto, { icon }).addTo(this.map);
 
     this.marcadores.push(marker);
 
     if (!this.polyline) {
       this.polyline = L.polyline(this.puntosRuta, {
-        color: this.rutaColor,
-        weight: 4
+        color: '#10b981',
+        weight: 4,
+        opacity: 0.9,
+        dashArray: '0',
+        lineCap: 'round',
+        lineJoin: 'round'
       }).addTo(this.map);
     } else {
       this.polyline.setLatLngs(this.puntosRuta);
@@ -185,8 +202,6 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
 
   guardarRuta(): void {
     if (!this.esAdmin) return;
-
-    console.log(`🔍 [guardarRuta] puntosRuta.length = ${this.puntosRuta.length}, creandoRuta = ${this.creandoRuta}`);
 
     if (this.puntosRuta.length < 2) {
       this.notificationService.warning("Debes marcar al menos 2 puntos.");
@@ -203,13 +218,9 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
     const payload: CrearRutaPayload = {
       perfil_id: this.api.perfilId,
       nombre_ruta: this.nombreRuta,
-      color_hex: this.rutaColor,   // ← IMPORTANTE
+      color_hex: '#10b981',
       shape
     };
-
-    console.log("📤 Payload enviado:", payload);
-    console.log("📤 puntosRuta array completo:", this.puntosRuta);
-    console.log("📤 coordinates:", shape.coordinates);
 
     this.api.crearRuta(payload).subscribe({
       next: () => {
@@ -218,24 +229,20 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
         // Guardar la ruta recién creada en memoria para mostrarla sin esperar GET
         const rutaLocal = {
           nombre_ruta: this.nombreRuta,
-          color_hex: this.rutaColor,
+          color_hex: '#10b981',
           shape: shape,
           id: Date.now().toString() // ID temporal
         };
         
         this.rutas.push(rutaLocal);
-        console.log("✅ Ruta añadida a lista local (en espera de que el backend devuelva datos completos)");
-        
         this.creandoRuta = false;
         this.nombreRuta = '';
-        this.rutaColor = '#2563eb';
         this.limpiarMapa();
         
         // Recargar desde el servidor (para actualizaciones de otros usuarios)
         setTimeout(() => this.cargarRutas(), 1000);
       },
       error: (err: any) => {
-        console.error("❌ Error guardando ruta:", err);
         this.notificationService.error("Error al guardar la ruta");
       }
     });
@@ -266,13 +273,10 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
 
     // Dibujar puntos
     coords.forEach((p: L.LatLng) => {
-      const m = L.circleMarker(p, {
-        radius: 6,
-        color: r.color_hex || '#10b981',
-        fillColor: r.color_hex || '#10b981',
-        fillOpacity: 1,
-        weight: 2
-      }).addTo(this.map);
+      const color = r.color_hex || '#10b981';
+      const pinHtml = this.makePinHtml(color, 30);
+      const icon = L.divIcon({ html: pinHtml, className: 'route-pin-icon route-pin-svg', iconSize: [30, 30], iconAnchor: [15, 30] });
+      const m = L.marker(p, { icon }).addTo(this.map);
 
       this.marcadores.push(m);
     });
@@ -288,7 +292,6 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
   // ===================================================
 
   limpiarMapa(): void {
-    console.log('🧹 [limpiarMapa] limpiando', this.puntosRuta.length, 'puntos');
     this.puntosRuta = [];
 
     if (this.polyline) {

@@ -66,10 +66,6 @@ export class ApiService {
   }
 
   crearRuta(payload: CrearRutaPayload): Observable<any> {
-    console.log("📤 Enviando ruta a API:", payload);
-    console.log("📤 shape.coordinates.length =", payload.shape.coordinates.length, "puntos");
-    console.log("📤 shape stringificado:", JSON.stringify(payload.shape));
-    
     // El backend del profe podría esperar shape como string, no como objeto
     const body = {
       perfil_id: payload.perfil_id,
@@ -77,18 +73,8 @@ export class ApiService {
       color_hex: payload.color_hex,
       shape: JSON.stringify(payload.shape)  // Asegurar que es string
     };
-    
-    console.log("📤 Body final que se envía:", body);
-    
-    return this.http.post<any>(`${this.baseUrl}/rutas`, body).pipe(
-      tap((res: any) => {
-        console.log("✅ crearRuta response completa:", res);
-        if (res?.data?.shape) {
-          const receivedShape = typeof res.data.shape === 'string' ? JSON.parse(res.data.shape) : res.data.shape;
-          console.log("✅ shape en response tiene", receivedShape.coordinates?.length || 0, "puntos");
-        }
-      })
-    );
+
+    return this.http.post<any>(`${this.baseUrl}/rutas`, body);
   }
 
   eliminarRuta(id: string): Observable<any> {

@@ -141,6 +141,7 @@ $dark-text-muted: #94a3b8;
     border-collapse: collapse;
     border-radius: 12px;
     overflow: hidden;
+    table-layout: fixed;
 
     thead {
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.2) 100%);
@@ -149,11 +150,13 @@ $dark-text-muted: #94a3b8;
       tr th {
         color: $emerald;
         padding: 1rem;
-        text-align: left;
+        text-align: center;
         font-weight: 600;
         font-size: 0.95rem;
         letter-spacing: 0.5px;
         text-transform: uppercase;
+        word-break: break-word;
+        vertical-align: middle;
       }
     }
 
@@ -176,10 +179,16 @@ $dark-text-muted: #94a3b8;
           padding: 1rem;
           color: $dark-text;
           font-size: 0.9rem;
+          word-break: break-word;
+          vertical-align: middle;
+          text-align: center;
 
           &:last-child {
             display: flex;
             gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem 0.5rem;
           }
 
           button {

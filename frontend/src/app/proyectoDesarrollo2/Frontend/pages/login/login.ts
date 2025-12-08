@@ -32,22 +32,18 @@ export class Login {
         if (res.ok) {
           this.authService.guardarToken(res.token);
           this.authService.guardarUsuario(res.usuario);
-
-          this.notificationService.success('¡Bienvenido!');
-          setTimeout(() => this.router.navigate(['/main']), 1500);
+          this.router.navigate(['/main']);
         } else {
           this.notificationService.error('Credenciales inválidas');
         }
       },
       error: err => {
-        console.error('Error en login:', err);
         this.notificationService.error('Error al iniciar sesión');
       }
     });
   }
 
   handleGoogleLogin(): void {
-    console.log('Inicio de sesión con Google');
     this.notificationService.info('Google Sign-In en desarrollo');
   }
 
