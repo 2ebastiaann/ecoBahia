@@ -19,7 +19,7 @@ interface LoginResponse {
 export class AuthService {
 
   // 🔥 RUTA CORRECTA DEL BACKEND
-  private apiUrl = `${environment.API_BASE_URL}/api/usuarios`;
+  private apiUrl = `${environment.API_BASE_URL}/usuarios`;
 
   constructor(private http: HttpClient) {}
 
