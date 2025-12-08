@@ -9,7 +9,7 @@ interface LoginResponse {
   usuario: {
     id_usuario: string;
     email: string;
-    id_rol: number | null;
+    id_rol: number;
   };
 }
 
@@ -17,7 +17,9 @@ interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = `${environment.API_BASE_URL}/usuarios`;
+
+  // 🔥 RUTA CORRECTA DEL BACKEND
+  private apiUrl = `${environment.API_BASE_URL}/api/usuarios`;
 
   constructor(private http: HttpClient) {}
 
@@ -25,15 +27,15 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password });
   }
 
-  register(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, { email, password });
+  register(email: string, password: string, id_rol: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, { email, password, id_rol });
   }
 
   guardarToken(token: string) {
     localStorage.setItem('token', token);
   }
 
-  obtenerToken(): string | null { 
+  obtenerToken(): string | null {
     return localStorage.getItem('token');
   }
 

@@ -1,12 +1,14 @@
 // Importar fuente Inter desde Google Fonts
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-// Variables
-$primary-green: #059669;
-$secondary-green: #10b981;
-$light-green: #34d399;
-$dark-green: #047857;
-$emerald: #0d9488;
+// Variables - Palette EcoBahía
+$primary-teal: #10b981;
+$secondary-teal: #14b8a6;
+$dark-blue: #1e3a4c;
+$darker-blue: #182c38;
+$darkest-blue: #0f1f29;
+$accent-green: #34d399;
+$light-teal: #5eead4;
 $success: #10b981;
 $warning: #f59e0b;
 $error: #ef4444;
@@ -41,7 +43,7 @@ $white: #ffffff;
 // Main container
 .register-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #0d9488 100%);
+  background: linear-gradient(135deg, $darkest-blue 0%, $darker-blue 50%, $dark-blue 100%);
   @include flex-center;
   padding: 1.5rem;
   position: relative;
@@ -51,34 +53,34 @@ $white: #ffffff;
   .decorative-circle {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
+    filter: blur(100px);
     animation: float 20s ease-in-out infinite;
     
     &.circle-1 {
       top: 5rem;
       left: 2.5rem;
-      width: 16rem;
-      height: 16rem;
-      background-color: rgba(52, 211, 153, 0.3);
+      width: 20rem;
+      height: 20rem;
+      background-color: rgba(16, 185, 129, 0.15);
       animation-delay: 0s;
     }
     
     &.circle-2 {
       bottom: 5rem;
       right: 2.5rem;
-      width: 24rem;
-      height: 24rem;
-      background-color: rgba(52, 211, 153, 0.25);
+      width: 28rem;
+      height: 28rem;
+      background-color: rgba(20, 184, 166, 0.12);
       animation-delay: 3s;
     }
     
     &.circle-3 {
       top: 50%;
       left: 33%;
-      width: 12rem;
-      height: 12rem;
-      background-color: rgba(45, 212, 191, 0.15);
-      filter: blur(60px);
+      width: 16rem;
+      height: 16rem;
+      background-color: rgba(52, 211, 153, 0.08);
+      filter: blur(80px);
       animation-delay: 6s;
     }
   }
@@ -89,7 +91,7 @@ $white: #ffffff;
     transform: translateY(0) scale(1);
   }
   50% {
-    transform: translateY(-20px) scale(1.05);
+    transform: translateY(-30px) scale(1.05);
   }
 }
 
@@ -103,7 +105,7 @@ $white: #ffffff;
   .card-content {
     background-color: $white;
     border-radius: 2rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(16, 185, 129, 0.1);
     overflow: hidden;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -117,7 +119,7 @@ $white: #ffffff;
 
 // Left Panel
 .left-panel {
-  background: linear-gradient(135deg, $primary-green 0%, $dark-green 100%);
+  background: linear-gradient(135deg, $dark-blue 0%, $darkest-blue 100%);
   padding: 3.5rem;
   display: flex;
   flex-direction: column;
@@ -134,7 +136,7 @@ $white: #ffffff;
       right: 2.5rem;
       width: 8rem;
       height: 8rem;
-      border: 3px solid rgba(52, 211, 153, 0.25);
+      border: 3px solid rgba(16, 185, 129, 0.25);
       border-radius: 50%;
       animation: pulse 4s ease-in-out infinite;
     }
@@ -144,7 +146,7 @@ $white: #ffffff;
       left: 2.5rem;
       width: 6rem;
       height: 6rem;
-      border: 3px solid rgba(52, 211, 153, 0.2);
+      border: 3px solid rgba(20, 184, 166, 0.2);
       border-radius: 50%;
       animation: pulse 5s ease-in-out infinite;
     }
@@ -196,15 +198,15 @@ $white: #ffffff;
     .logo-icon {
       width: 4rem;
       height: 4rem;
-      background-color: $white;
+      background: linear-gradient(135deg, $primary-teal 0%, $secondary-teal 100%);
       border-radius: 1.125rem;
       @include flex-center;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
 
       .leaf-icon {
         width: 2.5rem;
         height: 2.5rem;
-        color: $primary-green;
+        color: $white;
       }
     }
 
@@ -221,7 +223,7 @@ $white: #ffffff;
       .app-subtitle {
         font-size: 0.875rem;
         font-weight: 500;
-        color: rgba(209, 250, 229, 0.9);
+        color: rgba(94, 234, 212, 0.9);
         margin: 0.125rem 0 0 0;
         letter-spacing: 0.01em;
       }
@@ -263,15 +265,16 @@ $white: #ffffff;
         .feature-icon {
           width: 1.75rem;
           height: 1.75rem;
-          background-color: rgba(255, 255, 255, 0.2);
+          background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(20, 184, 166, 0.25));
           border-radius: 0.5rem;
           @include flex-center;
           flex-shrink: 0;
+          border: 1px solid rgba(94, 234, 212, 0.2);
 
           svg {
             width: 1rem;
             height: 1rem;
-            color: $white;
+            color: $light-teal;
             stroke-width: 3;
           }
         }
@@ -295,15 +298,15 @@ $white: #ffffff;
       align-items: center;
       gap: 1rem;
       padding: 1.25rem;
-      background-color: rgba(255, 255, 255, 0.15);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(20, 184, 166, 0.15));
       border-radius: 1rem;
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(94, 234, 212, 0.2);
 
       svg {
         width: 2.5rem;
         height: 2.5rem;
-        color: $white;
+        color: $light-teal;
         flex-shrink: 0;
       }
 
@@ -359,13 +362,14 @@ $white: #ffffff;
 
     &:hover {
       background-color: $gray-100;
-      border-color: $gray-300;
+      border-color: $primary-teal;
+      color: $primary-teal;
       transform: translateX(-2px);
     }
 
     &:focus {
       outline: none;
-      border-color: $secondary-green;
+      border-color: $primary-teal;
       box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
     }
   }
@@ -377,11 +381,11 @@ $white: #ffffff;
     .header-icon {
       width: 4rem;
       height: 4rem;
-      background: linear-gradient(135deg, $secondary-green 0%, $primary-green 100%);
+      background: linear-gradient(135deg, $primary-teal 0%, $secondary-teal 100%);
       border-radius: 1.25rem;
       @include flex-center;
       margin: 0 auto 1.5rem;
-      box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.3);
+      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
 
       svg {
         width: 2rem;
@@ -461,7 +465,7 @@ $white: #ffffff;
 
         &:focus {
           outline: none;
-          border-color: $secondary-green;
+          border-color: $primary-teal;
           box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
         }
 
@@ -498,11 +502,11 @@ $white: #ffffff;
         }
 
         &:hover svg {
-          color: $gray-600;
+          color: $primary-teal;
         }
 
         &:focus {
-          outline: 2px solid $secondary-green;
+          outline: 2px solid $primary-teal;
           outline-offset: 2px;
           border-radius: 0.25rem;
         }
@@ -563,7 +567,7 @@ $white: #ffffff;
           }
 
           &.strong {
-            background-color: $success;
+            background: linear-gradient(90deg, $primary-teal 0%, $secondary-teal 100%);
           }
         }
       }
@@ -586,7 +590,7 @@ $white: #ffffff;
           }
 
           &.strong {
-            color: $success;
+            color: $primary-teal;
           }
         }
       }
@@ -618,7 +622,7 @@ $white: #ffffff;
         @include transition(all, 0.2s);
 
         &:checked {
-          accent-color: $primary-green;
+          accent-color: $primary-teal;
         }
 
         &:focus {
@@ -637,19 +641,19 @@ $white: #ffffff;
         .link-button {
           background: none;
           border: none;
-          color: $primary-green;
+          color: $primary-teal;
           font-weight: 600;
           cursor: pointer;
           padding: 0;
           @include transition(color);
 
           &:hover {
-            color: $dark-green;
+            color: $secondary-teal;
             text-decoration: underline;
           }
 
           &:focus {
-            outline: 2px solid $secondary-green;
+            outline: 2px solid $primary-teal;
             outline-offset: 2px;
             border-radius: 0.25rem;
           }
@@ -662,7 +666,7 @@ $white: #ffffff;
   .register-button {
     width: 100%;
     padding: 1rem 1.5rem;
-    background: linear-gradient(90deg, $primary-green 0%, $dark-green 100%);
+    background: linear-gradient(90deg, $primary-teal 0%, $secondary-teal 100%);
     color: $white;
     font-size: 0.9375rem;
     font-weight: 700;
@@ -670,7 +674,7 @@ $white: #ffffff;
     border: none;
     border-radius: 0.875rem;
     cursor: pointer;
-    box-shadow: 0 10px 20px -5px rgba(5, 150, 105, 0.3);
+    box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4);
     @include transition;
     margin-top: 0.5rem;
     display: flex;
@@ -684,19 +688,19 @@ $white: #ffffff;
     }
 
     &:hover:not(:disabled) {
-      background: linear-gradient(90deg, $dark-green 0%, #065f46 100%);
+      background: linear-gradient(90deg, $secondary-teal 0%, $dark-blue 100%);
       transform: translateY(-2px);
-      box-shadow: 0 15px 30px -5px rgba(5, 150, 105, 0.4);
+      box-shadow: 0 15px 30px -5px rgba(16, 185, 129, 0.5);
     }
 
     &:active:not(:disabled) {
       transform: translateY(0);
-      box-shadow: 0 5px 15px -3px rgba(5, 150, 105, 0.3);
+      box-shadow: 0 5px 15px -3px rgba(16, 185, 129, 0.4);
     }
 
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2), 0 10px 20px -5px rgba(5, 150, 105, 0.3);
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2), 0 10px 20px -5px rgba(16, 185, 129, 0.4);
     }
 
     &:disabled {
@@ -766,7 +770,7 @@ $white: #ffffff;
 
     &:focus {
       outline: none;
-      border-color: $secondary-green;
+      border-color: $primary-teal;
       box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
     }
   }
@@ -783,7 +787,7 @@ $white: #ffffff;
       margin: 0;
 
       .login-link {
-        color: $primary-green;
+        color: $primary-teal;
         font-weight: 700;
         background: none;
         border: none;
@@ -792,12 +796,12 @@ $white: #ffffff;
         letter-spacing: -0.01em;
 
         &:hover {
-          color: $dark-green;
+          color: $secondary-teal;
           text-decoration: underline;
         }
 
         &:focus {
-          outline: 2px solid $secondary-green;
+          outline: 2px solid $primary-teal;
           outline-offset: 2px;
           border-radius: 0.25rem;
         }

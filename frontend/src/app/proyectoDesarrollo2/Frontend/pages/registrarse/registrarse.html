@@ -222,6 +222,24 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Selector de Rol -->
+                    <div class="input-group">
+                        <label class="input-label">
+                            Seleccionar Rol
+                            <span class="required">*</span>
+                        </label>
+
+                    <div class="input-wrapper">
+                        <select [(ngModel)]="id_rol" class="input-field">
+                            <option [value]="1">Administrador</option>
+                            <option [value]="2">Conductor</option>
+                            <option [value]="3">Usuario</option>
+                        </select>
+                    </div>
+
+                        <p class="input-hint">Elige el rol del usuario en el sistema</p>
+                    </div>
+
 
                     <!-- Terms and conditions -->
                     <div class="terms-group">

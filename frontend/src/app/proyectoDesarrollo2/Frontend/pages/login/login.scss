@@ -1,12 +1,14 @@
 // Importar fuente Inter desde Google Fonts
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-// Variables
-$primary-green: #059669;
-$secondary-green: #10b981;
-$light-green: #34d399;
-$dark-green: #047857;
-$emerald: #0d9488;
+// Variables - Palette EcoBahía
+$primary-teal: #10b981;
+$secondary-teal: #14b8a6;
+$dark-blue: #1e3a4c;
+$darker-blue: #182c38;
+$darkest-blue: #0f1f29;
+$accent-green: #34d399;
+$light-teal: #5eead4;
 $gray-50: #f9fafb;
 $gray-100: #f3f4f6;
 $gray-200: #e5e7eb;
@@ -38,7 +40,7 @@ $white: #ffffff;
 // Main container
 .login-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #0d9488 100%);
+  background: linear-gradient(135deg, $darkest-blue 0%, $darker-blue 50%, $dark-blue 100%);
   @include flex-center;
   padding: 1.5rem;
   position: relative;
@@ -48,34 +50,34 @@ $white: #ffffff;
   .decorative-circle {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
+    filter: blur(100px);
     animation: float 20s ease-in-out infinite;
     
     &.circle-1 {
       top: 5rem;
       left: 2.5rem;
-      width: 16rem;
-      height: 16rem;
-      background-color: rgba(52, 211, 153, 0.3);
+      width: 20rem;
+      height: 20rem;
+      background-color: rgba(16, 185, 129, 0.15);
       animation-delay: 0s;
     }
     
     &.circle-2 {
       bottom: 5rem;
       right: 2.5rem;
-      width: 24rem;
-      height: 24rem;
-      background-color: rgba(52, 211, 153, 0.25);
+      width: 28rem;
+      height: 28rem;
+      background-color: rgba(20, 184, 166, 0.12);
       animation-delay: 3s;
     }
     
     &.circle-3 {
       top: 50%;
       left: 33%;
-      width: 12rem;
-      height: 12rem;
-      background-color: rgba(45, 212, 191, 0.15);
-      filter: blur(60px);
+      width: 16rem;
+      height: 16rem;
+      background-color: rgba(52, 211, 153, 0.08);
+      filter: blur(80px);
       animation-delay: 6s;
     }
   }
@@ -86,7 +88,7 @@ $white: #ffffff;
     transform: translateY(0) scale(1);
   }
   50% {
-    transform: translateY(-20px) scale(1.05);
+    transform: translateY(-30px) scale(1.05);
   }
 }
 
@@ -100,7 +102,7 @@ $white: #ffffff;
   .card-content {
     background-color: $white;
     border-radius: 2rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(16, 185, 129, 0.1);
     overflow: hidden;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -114,7 +116,7 @@ $white: #ffffff;
 
 // Left Panel
 .left-panel {
-  background: linear-gradient(135deg, $primary-green 0%, $dark-green 100%);
+  background: linear-gradient(135deg, $dark-blue 0%, $darkest-blue 100%);
   padding: 3.5rem;
   display: flex;
   flex-direction: column;
@@ -131,7 +133,7 @@ $white: #ffffff;
       right: 2.5rem;
       width: 8rem;
       height: 8rem;
-      border: 3px solid rgba(52, 211, 153, 0.25);
+      border: 3px solid rgba(16, 185, 129, 0.25);
       border-radius: 50%;
       animation: pulse 4s ease-in-out infinite;
     }
@@ -141,7 +143,7 @@ $white: #ffffff;
       left: 2.5rem;
       width: 6rem;
       height: 6rem;
-      border: 3px solid rgba(52, 211, 153, 0.2);
+      border: 3px solid rgba(20, 184, 166, 0.2);
       border-radius: 50%;
       animation: pulse 5s ease-in-out infinite;
     }
@@ -193,15 +195,15 @@ $white: #ffffff;
     .logo-icon {
       width: 4rem;
       height: 4rem;
-      background-color: $white;
+      background: linear-gradient(135deg, $primary-teal 0%, $secondary-teal 100%);
       border-radius: 1.125rem;
       @include flex-center;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
 
       .leaf-icon {
         width: 2.5rem;
         height: 2.5rem;
-        color: $primary-green;
+        color: $white;
       }
     }
 
@@ -218,7 +220,7 @@ $white: #ffffff;
       .app-subtitle {
         font-size: 0.875rem;
         font-weight: 500;
-        color: rgba(209, 250, 229, 0.9);
+        color: rgba(94, 234, 212, 0.9);
         margin: 0.125rem 0 0 0;
         letter-spacing: 0.01em;
       }
@@ -257,16 +259,16 @@ $white: #ffffff;
     .truck-icon-container {
       width: 5rem;
       height: 5rem;
-      background-color: rgba(255, 255, 255, 0.15);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(20, 184, 166, 0.15));
       border-radius: 1.125rem;
       @include flex-center;
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(94, 234, 212, 0.2);
 
       .truck-icon {
         width: 3rem;
         height: 3rem;
-        color: $white;
+        color: $light-teal;
       }
     }
 
@@ -366,11 +368,11 @@ $white: #ffffff;
 
         &:focus {
           outline: none;
-          border-color: $secondary-green;
+          border-color: $primary-teal;
           box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
           
           & + .input-icon .icon {
-            color: $secondary-green;
+            color: $primary-teal;
           }
         }
 
@@ -408,7 +410,7 @@ $white: #ffffff;
         @include transition(all, 0.2s);
 
         &:checked {
-          accent-color: $primary-green;
+          accent-color: $primary-teal;
         }
 
         &:focus {
@@ -428,7 +430,7 @@ $white: #ffffff;
     .forgot-password {
       font-size: 0.875rem;
       font-weight: 600;
-      color: $primary-green;
+      color: $primary-teal;
       background: none;
       border: none;
       cursor: pointer;
@@ -436,11 +438,11 @@ $white: #ffffff;
       letter-spacing: -0.01em;
 
       &:hover {
-        color: $dark-green;
+        color: $secondary-teal;
       }
 
       &:focus {
-        outline: 2px solid $secondary-green;
+        outline: 2px solid $primary-teal;
         outline-offset: 2px;
         border-radius: 0.25rem;
       }
@@ -451,7 +453,7 @@ $white: #ffffff;
   .login-button {
     width: 100%;
     padding: 1rem 1.5rem;
-    background: linear-gradient(90deg, $primary-green 0%, $dark-green 100%);
+    background: linear-gradient(90deg, $primary-teal 0%, $secondary-teal 100%);
     color: $white;
     font-size: 0.9375rem;
     font-weight: 700;
@@ -459,24 +461,24 @@ $white: #ffffff;
     border: none;
     border-radius: 0.875rem;
     cursor: pointer;
-    box-shadow: 0 10px 20px -5px rgba(5, 150, 105, 0.3);
+    box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4);
     @include transition;
     margin-top: 0.5rem;
 
     &:hover {
-      background: linear-gradient(90deg, $dark-green 0%, #065f46 100%);
+      background: linear-gradient(90deg, $secondary-teal 0%, $dark-blue 100%);
       transform: translateY(-2px);
-      box-shadow: 0 15px 30px -5px rgba(5, 150, 105, 0.4);
+      box-shadow: 0 15px 30px -5px rgba(16, 185, 129, 0.5);
     }
 
     &:active {
       transform: translateY(0);
-      box-shadow: 0 5px 15px -3px rgba(5, 150, 105, 0.3);
+      box-shadow: 0 5px 15px -3px rgba(16, 185, 129, 0.4);
     }
 
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2), 0 10px 20px -5px rgba(5, 150, 105, 0.3);
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2), 0 10px 20px -5px rgba(16, 185, 129, 0.4);
     }
   }
 
@@ -539,12 +541,12 @@ $white: #ffffff;
 
     &:focus {
       outline: none;
-      border-color: $secondary-green;
+      border-color: $primary-teal;
       box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
     }
   }
 
-  // Footer - MEJORADO
+  // Footer
   .form-footer {
     margin-top: 2.5rem;
 
@@ -554,13 +556,12 @@ $white: #ffffff;
       align-items: center;
       gap: 1rem;
       padding: 1.5rem;
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.12) 100%);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(20, 184, 166, 0.12) 100%);
       border-radius: 1rem;
-      border: 2px dashed rgba(5, 150, 105, 0.3);
+      border: 2px dashed rgba(16, 185, 129, 0.3);
       position: relative;
       overflow: hidden;
 
-      // Efecto de brillo sutil
       &::before {
         content: '';
         position: absolute;
@@ -571,7 +572,7 @@ $white: #ffffff;
         background: linear-gradient(
           45deg,
           transparent 30%,
-          rgba(255, 255, 255, 0.1) 50%,
+          rgba(94, 234, 212, 0.1) 50%,
           transparent 70%
         );
         animation: shine 3s ease-in-out infinite;
@@ -599,7 +600,7 @@ $white: #ffffff;
       .register-button {
         width: 100%;
         padding: 1rem 2rem;
-        background: linear-gradient(135deg, $secondary-green 0%, $primary-green 100%);
+        background: linear-gradient(135deg, $primary-teal 0%, $secondary-teal 100%);
         color: $white;
         font-size: 0.9375rem;
         font-weight: 700;
@@ -611,13 +612,12 @@ $white: #ffffff;
         align-items: center;
         justify-content: center;
         gap: 0.625rem;
-        box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.4);
+        box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
         @include transition;
         position: relative;
         z-index: 1;
         overflow: hidden;
 
-        // Efecto de onda al hacer hover
         &::before {
           content: '';
           position: absolute;
@@ -650,9 +650,9 @@ $white: #ffffff;
         }
 
         &:hover {
-          background: linear-gradient(135deg, $primary-green 0%, $dark-green 100%);
+          background: linear-gradient(135deg, $secondary-teal 0%, $dark-blue 100%);
           transform: translateY(-3px) scale(1.02);
-          box-shadow: 0 15px 35px -5px rgba(5, 150, 105, 0.5);
+          box-shadow: 0 15px 35px -5px rgba(16, 185, 129, 0.5);
 
           .register-icon {
             transform: scale(1.1) rotate(5deg);
@@ -661,12 +661,12 @@ $white: #ffffff;
 
         &:active {
           transform: translateY(-1px) scale(1);
-          box-shadow: 0 8px 20px -5px rgba(5, 150, 105, 0.4);
+          box-shadow: 0 8px 20px -5px rgba(16, 185, 129, 0.4);
         }
 
         &:focus {
           outline: none;
-          box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.3), 0 10px 25px -5px rgba(5, 150, 105, 0.4);
+          box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.3), 0 10px 25px -5px rgba(16, 185, 129, 0.4);
         }
       }
     }

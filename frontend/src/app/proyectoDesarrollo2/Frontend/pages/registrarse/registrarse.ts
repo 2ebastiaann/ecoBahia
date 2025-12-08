@@ -19,6 +19,9 @@ export class Register {
   showPassword: boolean = false;
   passwordStrength: 'weak' | 'medium' | 'strong' = 'weak';
 
+  // NUEVO → rol
+  id_rol: number = 3; // usuario por defecto
+
   constructor(private router: Router, private authService: AuthService) {}
 
   handleSubmit(): void {
@@ -37,7 +40,7 @@ export class Register {
       return;
     }
 
-    this.authService.register(this.email, this.password).subscribe({
+    this.authService.register(this.email, this.password, this.id_rol).subscribe({
       next: res => {
         if (res.ok) {
           alert(`¡Registro exitoso! Bienvenido ${this.email}`);
@@ -54,8 +57,7 @@ export class Register {
   }
 
   handleGoogleRegister(): void {
-    console.log('Registro con Google');
-    alert('Redirigiendo a Google...');
+    alert('Registro con Google aún no implementado');
   }
 
   handleBack(): void {
@@ -67,9 +69,7 @@ export class Register {
   }
 
   handleKeyPress(event: KeyboardEvent): void {
-    if (event.key === 'Enter') {
-      this.handleSubmit();
-    }
+    if (event.key === 'Enter') this.handleSubmit();
   }
 
   togglePasswordVisibility(): void {
@@ -77,21 +77,15 @@ export class Register {
   }
 
   checkPasswordStrength(): void {
-    const password = this.password;
-    const length = password.length;
-
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumbers = /\d/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
+    const p = this.password;
     let strength = 0;
-    if (length >= 8) strength++;
-    if (length >= 12) strength++;
-    if (hasUpperCase) strength++;
-    if (hasLowerCase) strength++;
-    if (hasNumbers) strength++;
-    if (hasSpecialChar) strength++;
+
+    if (p.length >= 8) strength++;
+    if (p.length >= 12) strength++;
+    if (/[A-Z]/.test(p)) strength++;
+    if (/[a-z]/.test(p)) strength++;
+    if (/\d/.test(p)) strength++;
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(p)) strength++;
 
     if (strength <= 2) this.passwordStrength = 'weak';
     else if (strength <= 4) this.passwordStrength = 'medium';
@@ -99,28 +93,21 @@ export class Register {
   }
 
   getPasswordStrengthWidth(): string {
-    switch (this.passwordStrength) {
-      case 'weak': return '33%';
-      case 'medium': return '66%';
-      case 'strong': return '100%';
-      default: return '0%';
-    }
+    return this.passwordStrength === 'weak'
+      ? '33%' : this.passwordStrength === 'medium'
+      ? '66%' : '100%';
   }
 
   getPasswordStrengthText(): string {
-    switch (this.passwordStrength) {
-      case 'weak': return 'Débil';
-      case 'medium': return 'Media';
-      case 'strong': return 'Fuerte';
-      default: return '';
-    }
+    return this.passwordStrength === 'weak'
+      ? 'Débil' : this.passwordStrength === 'medium'
+      ? 'Media' : 'Fuerte';
   }
 
   isFormValid(): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isEmailValid = emailRegex.test(this.email);
-    const isPasswordValid = this.password.length >= 8;
-    const passwordsMatch = this.password === this.confirmPassword;
-    return isEmailValid && isPasswordValid && passwordsMatch && this.acceptTerms;
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
+    const passwordValid = this.password.length >= 8;
+    const match = this.password === this.confirmPassword;
+    return emailValid && passwordValid && match && this.acceptTerms;
   }
 }
