@@ -29,6 +29,8 @@ export class Login {
       next: res => {
         if (res.ok) {
           this.authService.guardarToken(res.token);
+          this.authService.guardarUsuario(res.usuario); // 👈 guardar rol aquí
+
           alert(`Bienvenido, ${res.usuario.email}!`);
           this.router.navigate(['/main']);
         } else {
@@ -41,6 +43,7 @@ export class Login {
       }
     });
   }
+
 
   handleGoogleLogin(): void {
     console.log('Inicio de sesión con Google');

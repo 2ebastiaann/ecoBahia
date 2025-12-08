@@ -18,7 +18,6 @@ interface LoginResponse {
 })
 export class AuthService {
 
-  // 🔥 RUTA CORRECTA DEL BACKEND
   private apiUrl = `${environment.API_BASE_URL}/usuarios`;
 
   constructor(private http: HttpClient) {}
@@ -35,11 +34,20 @@ export class AuthService {
     localStorage.setItem('token', token);
   }
 
+  guardarUsuario(usuario: any) {
+    localStorage.setItem('usuario', JSON.stringify(usuario));
+  }
+
   obtenerToken(): string | null {
     return localStorage.getItem('token');
   }
 
+  obtenerUsuario() {
+    return JSON.parse(localStorage.getItem('usuario') || 'null');
+  }
+
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
   }
 }

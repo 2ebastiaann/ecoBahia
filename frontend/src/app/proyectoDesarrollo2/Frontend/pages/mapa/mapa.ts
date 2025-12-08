@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import * as L from 'leaflet';
 import { ApiService } from '../../services/api.service';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-mapa',
@@ -16,37 +17,44 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
 
   map!: L.Map;
 
-  // ====== VARIABLES PARA EL MODAL ======
+  // Modal
   mostrarModalNombreRuta = false;
   nombreRuta = '';
   rutaColor = '#2563eb';
 
-  // ====== MODO CREACIÓN ======
+  // Modo creación
   creandoRuta = false;
   puntosRuta: L.LatLng[] = [];
   polyline: L.Polyline | null = null;
   marcadores: (L.Marker | L.CircleMarker)[] = [];
 
-  // ====== RUTAS DEL BACKEND ======
+  // Backend
   rutas: any[] = [];
   rutaSeleccionada: any = null;
-  // Flag para indicar que debemos iniciar creación al cargar el mapa
   private createRequested = false;
 
-  readonly PERFIL_ID = 'a4cdc1ca-5e37-40b1-8a4b-d26237e25142';
+  usuario: any;
+  esAdmin = false;
 
   constructor(
     private api: ApiService,
     public router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private auth: AuthService
   ) {}
 
   ngOnInit(): void {
+
+    // Leer usuario y rol
+    this.usuario = this.auth.obtenerUsuario();
+    if (this.usuario) {
+      this.esAdmin = this.usuario.id_rol === 1;
+    }
+
     this.cargarRutas();
 
-    // Si venimos con ?create=1, marcamos la petición para iniciar creación
     this.route.queryParams.subscribe(params => {
-      if (params['create']) {
+      if (params['create'] && this.esAdmin) {
         this.createRequested = true;
       }
     });
@@ -55,9 +63,8 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
   ngAfterViewInit(): void {
     this.initMap();
     setTimeout(() => this.map.invalidateSize(), 200);
-    // Si se solicitó crear ruta antes de inicializar, mostramos el modal
-    // para que el usuario ingrese nombre y color antes de dibujar
-    if (this.createRequested) {
+
+    if (this.createRequested && this.esAdmin) {
       this.mostrarModalNombreRuta = true;
     }
   }
@@ -66,25 +73,19 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
     if (this.map) this.map.remove();
   }
 
-  // ---------------------------------------------
-  // INICIALIZAR MAPA
-  // ---------------------------------------------
+  // Inicializar mapa
   private initMap(): void {
     this.map = L.map('mapContainer', {
       center: [3.8773, -77.0277],
       zoom: 14
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19
-    }).addTo(this.map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
 
     this.map.on('click', (e: L.LeafletMouseEvent) => this.onMapClick(e));
   }
 
-  // ---------------------------------------------
-  // CARGAR RUTAS DEL BACKEND
-  // ---------------------------------------------
+  // Cargar rutas registradas
   private cargarRutas(): void {
     this.api.getRutas().subscribe({
       next: (resp) => {
@@ -98,16 +99,13 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
     });
   }
 
-  // ---------------------------------------------
-  // CLICK EN MAPA (MODO CREACIÓN)
-  // ---------------------------------------------
+  // Click en mapa (solo admin y solo cuando está creando)
   private onMapClick(e: L.LeafletMouseEvent): void {
-    if (!this.creandoRuta) return;
+    if (!this.creandoRuta || !this.esAdmin) return;
 
     const p = e.latlng;
     this.puntosRuta.push(p);
 
-    // Usar un marcador circular bonito en lugar del icono por defecto
     const circle = L.circleMarker(p, {
       radius: 6,
       color: this.rutaColor,
@@ -115,39 +113,40 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
       fillOpacity: 1,
       weight: 2
     }).addTo(this.map);
+
     this.marcadores.push(circle);
 
     if (!this.polyline) {
-      this.polyline = L.polyline(this.puntosRuta, { color: this.rutaColor, weight: 4 })
-        .addTo(this.map);
+      this.polyline = L.polyline(this.puntosRuta, { color: this.rutaColor, weight: 4 }).addTo(this.map);
     } else {
       this.polyline.setLatLngs(this.puntosRuta);
     }
   }
 
-  // ---------------------------------------------
-  // ABRIR MODAL PARA NOMBRE
-  // ---------------------------------------------
+  // Abrir modal
   empezarCrearRuta(): void {
+    if (!this.esAdmin) return;
     this.mostrarModalNombreRuta = true;
   }
 
+  // Confirmar nombre y comenzar
   confirmarNombreRuta(): void {
+    if (!this.esAdmin) return;
+
     if (!this.nombreRuta.trim()) {
-      alert("Debe ingresar un nombre para la ruta.");
+      alert("Debe ingresar un nombre.");
       return;
     }
 
     this.mostrarModalNombreRuta = false;
     this.creandoRuta = true;
-
     this.limpiarMapa();
   }
 
-  // ---------------------------------------------
-  // GUARDAR RUTA EN BACKEND
-  // ---------------------------------------------
+  // Guardar ruta
   guardarRuta(): void {
+    if (!this.esAdmin) return;
+
     if (this.puntosRuta.length < 2) {
       alert("Debes marcar al menos 2 puntos.");
       return;
@@ -165,59 +164,46 @@ export class MapaComponent implements AfterViewInit, OnDestroy, OnInit {
     };
 
     this.api.crearRuta(payload).subscribe({
-      next: (res) => {
-        console.log('crearRuta response', res);
-        // Verificar estado del servidor antes de crear
-        this.api.getRutas().subscribe({ next: (before) => console.log('rutas before create', before), error: e => console.warn('getRutas before failed', e) });
+      next: () => {
         alert("Ruta creada exitosamente ✔");
-        // Stop creation and reset UI like the vehículos flow
         this.creandoRuta = false;
         this.limpiarMapa();
         this.nombreRuta = '';
         this.rutaColor = '#2563eb';
         this.mostrarModalNombreRuta = false;
         this.cargarRutas();
-        // Verificar estado del servidor después de crear
-        this.api.getRutas().subscribe({ next: (after) => console.log('rutas after create', after), error: e => console.warn('getRutas after failed', e) });
       },
-      error: (err) => {
+      error: err => {
         console.error("Error guardando ruta:", err);
-        alert('Error al guardar la ruta');
+        alert("Error al guardar la ruta");
       }
     });
   }
 
-  // ---------------------------------------------
-  // MOSTRAR RUTA GUARDADA
-  // ---------------------------------------------
+  // Mostrar ruta registrada
   mostrarRuta(r: any): void {
     this.limpiarMapa();
 
-    const coords = r.shape.coordinates.map(
-      (c: [number, number]) => L.latLng(c[1], c[0])
-    );
-
+    const coords = r.shape.coordinates.map((c: [number, number]) => L.latLng(c[1], c[0]));
     const color = r.color_hex || '#10b981';
-    this.polyline = L.polyline(coords, { color: color })
-      .addTo(this.map);
+
+    this.polyline = L.polyline(coords, { color }).addTo(this.map);
 
     coords.forEach((p: L.LatLng) => {
       const c = L.circleMarker(p, {
         radius: 6,
-        color: color,
+        color,
         fillColor: color,
         fillOpacity: 1,
         weight: 2
       }).addTo(this.map);
+
       this.marcadores.push(c);
     });
 
     this.map.fitBounds(this.polyline.getBounds(), { padding: [40, 40] });
   }
 
-  // ---------------------------------------------
-  // LIMPIAR MAPA
-  // ---------------------------------------------
   limpiarMapa(): void {
     this.puntosRuta = [];
 

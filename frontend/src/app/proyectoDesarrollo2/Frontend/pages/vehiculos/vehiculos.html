@@ -1,15 +1,17 @@
-<!-- vehiculos.component.html -->
 <div class="vehicles-container">
 
-    <!-- Botón volver al Main -->
-    <button class="btn-secondary" (click)="goToMain()">⬅️ Volver al Inicio</button>
+  <button class="btn-secondary" (click)="goToMain()">⬅️ Volver al Inicio</button>
+
   <header class="header">
     <h1>Vehículos</h1>
-    <button class="btn-primary" (click)="openAddModal()">➕ Agregar Vehículo</button>
+
+    <!-- ADMIN y CONDUCTOR pueden agregar -->
+    <button class="btn-primary" (click)="openAddModal()" *ngIf="esAdmin || esConductor">
+      ➕ Agregar Vehículo
+    </button>
   </header>
 
   <main>
-    <!-- Tabla de vehículos -->
     <table class="vehicles-table">
       <thead>
         <tr>
@@ -20,47 +22,69 @@
           <th>Acciones</th>
         </tr>
       </thead>
+
       <tbody>
         <tr *ngFor="let vehiculo of vehicles">
           <td>{{ vehiculo.placa }}</td>
           <td>{{ vehiculo.marca }}</td>
           <td>{{ vehiculo.modelo }}</td>
           <td>{{ vehiculo.activo ? 'Sí' : 'No' }}</td>
+
           <td>
-            <button (click)="editVehicle(vehiculo)">✏️ Editar</button>
-            <button (click)="deleteVehicle(vehiculo.id!)">🗑️ Eliminar</button>
+            <!-- Admin y Conductor pueden editar -->
+            <button (click)="editVehicle(vehiculo)" *ngIf="esAdmin || esConductor">
+              ✏️ Editar
+            </button>
+
+            <!-- Solo Admin elimina -->
+            <button (click)="deleteVehicle(vehiculo.id!)" *ngIf="esAdmin || esConductor">
+              🗑️ Eliminar
+            </button>
           </td>
-        </tr>
-        <tr *ngIf="vehicles.length === 0">
-          <td colspan="5">No hay vehículos registrados</td>
         </tr>
       </tbody>
     </table>
   </main>
+</div>
 
-  <!-- Modal agregar/editar vehículo -->
-  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <h2>{{ isEditMode ? 'Editar Vehículo' : 'Agregar Vehículo' }}</h2>
+
+<!-- ============================
+     MODAL FUERA DEL CONTENEDOR
+============================= -->
+<ng-container *ngIf="showModal">
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+
+      <h2>{{ isEditMode ? "Editar Vehículo" : "Agregar Vehículo" }}</h2>
+
       <form [formGroup]="vehicleForm" (ngSubmit)="onSubmit()">
 
         <div class="form-group">
-          <label>Placa *</label>
-          <input type="text" formControlName="placa" placeholder="ABC-123">
+          <label>Placa</label>
+          <input 
+            type="text" 
+            formControlName="placa"
+            placeholder="Ej: ABC-123">
         </div>
 
         <div class="form-group">
-          <label>Marca *</label>
-          <input type="text" formControlName="marca" placeholder="Ford">
+          <label>Marca</label>
+          <input 
+            type="text" 
+            formControlName="marca"
+            placeholder="Ej: Toyota">
         </div>
 
         <div class="form-group">
-          <label>Modelo *</label>
-          <input type="text" formControlName="modelo" placeholder="2023">
+          <label>Modelo</label>
+          <input 
+            type="text" 
+            formControlName="modelo"
+            placeholder="Ej: 2024">
         </div>
 
         <div class="form-group">
-          <label>Activo *</label>
+          <label>Activo</label>
           <select formControlName="activo">
             <option [value]="true">Sí</option>
             <option [value]="false">No</option>
@@ -68,14 +92,16 @@
         </div>
 
         <div class="modal-actions">
-          <button type="button" (click)="closeModal()">Cancelar</button>
-          <button type="submit" [disabled]="!vehicleForm.valid">
-            {{ isEditMode ? 'Actualizar' : 'Guardar' }}
+          <button type="button" class="btn-secondary" (click)="closeModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="!vehicleForm.valid">
+            {{ isEditMode ? "Guardar Cambios" : "Agregar" }}
           </button>
         </div>
 
       </form>
+
     </div>
   </div>
-
-</div>
+</ng-container>

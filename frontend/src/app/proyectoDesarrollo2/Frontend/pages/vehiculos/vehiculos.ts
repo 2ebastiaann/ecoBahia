@@ -1,9 +1,10 @@
-// vehiculos.component.ts
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 interface Vehiculo {
   id?: string;
@@ -15,9 +16,9 @@ interface Vehiculo {
 
 @Component({
   selector: 'app-vehiculos',
+  standalone: true,
   templateUrl: './vehiculos.html',
   styleUrls: ['./vehiculos.scss'],
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule]
 })
 export class VehiculosComponent implements OnInit {
@@ -28,13 +29,18 @@ export class VehiculosComponent implements OnInit {
   isEditMode = false;
   selectedVehicle?: Vehiculo;
 
-  //Perfi ID
-  private readonly PERFIL_ID = 'c11bebca-c05b-4a58-afe0-cf280b686365';
+  usuario: any;
+  esAdmin = false;
+  esConductor = false;
+  esUsuario = false;
+
+  PERFIL_ID = environment.PERFIL_ID; // usado para crear vehículos
 
   constructor(
     private api: ApiService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private auth: AuthService
   ) {
     this.vehicleForm = this.fb.group({
       placa: ['', Validators.required],
@@ -45,6 +51,16 @@ export class VehiculosComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.usuario = this.auth.obtenerUsuario();
+    console.log("Usuario:", this.usuario);
+    console.log("ID rol recibido:", this.usuario?.id_rol);
+
+    if (this.usuario) {
+      this.esAdmin = this.usuario.id_rol === 1;
+      this.esConductor = this.usuario.id_rol === 2;
+      this.esUsuario = this.usuario.id_rol === 3;
+    }
+
     this.loadVehicles();
   }
 
@@ -53,83 +69,79 @@ export class VehiculosComponent implements OnInit {
       next: (res: any) => {
         this.vehicles = res.data || [];
       },
-      error: (err: any) => {
-        console.error('Error cargando vehículos:', err);
-        alert('No se pudieron cargar los vehículos');
-      }
+      error: err => console.error('Error cargando vehículos:', err)
     });
   }
 
   openAddModal(): void {
+    if (!this.esAdmin && !this.esConductor) return;
+
     this.isEditMode = false;
     this.vehicleForm.reset({ activo: true });
+    this.selectedVehicle = undefined;
     this.showModal = true;
   }
 
   editVehicle(vehicle: Vehiculo): void {
+    if (!this.esAdmin && !this.esConductor) return;
+
     this.isEditMode = true;
     this.selectedVehicle = vehicle;
     this.vehicleForm.patchValue(vehicle);
     this.showModal = true;
   }
 
+  deleteVehicle(id: string): void {
+    if (!this.esAdmin && !this.esConductor) return;
+
+    if (!confirm('¿Eliminar este vehículo?')) return;
+
+    this.api.eliminarVehiculo(id).subscribe({
+      next: () => this.loadVehicles(),
+      error: err => console.error(err)
+    });
+  }
+
   closeModal(): void {
     this.showModal = false;
     this.vehicleForm.reset({ activo: true });
-    this.selectedVehicle = undefined;
   }
 
   onSubmit(): void {
     if (this.vehicleForm.invalid) return;
 
-    const vehiculoData = {
+    const data = {
       ...this.vehicleForm.value,
-      perfil_id: this.PERFIL_ID
+      perfil_id: this.PERFIL_ID   // 🔥 NECESARIO PARA QUE EL BACKEND PERMITA CREAR VEHÍCULOS
     };
 
+    // EDITAR VEHÍCULO
     if (this.isEditMode && this.selectedVehicle?.id) {
-      this.api.actualizarVehiculo(this.selectedVehicle.id, vehiculoData).subscribe({
-        next: (res: any) => {
-          alert('Vehículo actualizado correctamente');
+      this.api.actualizarVehiculo(this.selectedVehicle.id, data).subscribe({
+        next: () => {
           this.closeModal();
           this.loadVehicles();
         },
-        error: (err: any) => {
-          console.error('Error actualizando vehículo:', err);
-          alert('Error al actualizar el vehículo');
-        }
+        error: err => console.error("Error editando:", err)
       });
-    } else {
-      this.api.crearVehiculo(vehiculoData).subscribe({
-        next: (res: any) => {
-          alert('Vehículo creado correctamente');
-          this.closeModal();
-          this.loadVehicles();
-        },
-        error: (err: any) => {
-          console.error('Error creando vehículo:', err);
-          alert('Error al crear el vehículo');
-        }
-      });
+      return;
     }
-  }
 
-  deleteVehicle(id: string): void {
-    if (!confirm('¿Seguro que deseas eliminar este vehículo?')) return;
+    // CREAR VEHÍCULO
+    if (!this.esAdmin && !this.esConductor) return;
 
-    this.api.eliminarVehiculo(id).subscribe({
-      next: (res: any) => {
-        alert('Vehículo eliminado correctamente');
+    this.api.crearVehiculo(data).subscribe({
+      next: () => {
+        this.closeModal();
         this.loadVehicles();
       },
-      error: (err: any) => {
-        console.error('Error eliminando vehículo:', err);
-        alert('Error al eliminar el vehículo');
+      error: err => {
+        console.error("Error creando vehículo:", err);
+        alert("Error creando vehículo. Revisa consola.");
       }
     });
   }
 
-  // NUEVO: método para volver al Main
   goToMain(): void {
     this.router.navigate(['/main']);
   }
