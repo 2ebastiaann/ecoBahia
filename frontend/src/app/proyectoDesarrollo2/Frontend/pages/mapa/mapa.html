@@ -1,9 +1,15 @@
 <div class="map-page-container">
 
-  <!-- Header bar with buttons -->
+  <!-- CONTENEDOR DE NOTIFICACIONES -->
+  <app-notification-container></app-notification-container>
+
+  <!-- BARRA SUPERIOR -->
   <div class="map-header-bar">
+
     <div class="header-left">
-      <button class="btn btn-back" (click)="router.navigate(['/main'])">⬅ Volver</button>
+      <button class="btn btn-back" (click)="router.navigate(['/main'])">
+        ⬅ Volver
+      </button>
     </div>
 
     <div class="header-center">
@@ -12,99 +18,142 @@
 
     <div class="header-right">
 
-      <!-- SOLO ADMIN puede crear rutas -->
-      <button class="btn btn-primary" (click)="empezarCrearRuta()" *ngIf="!creandoRuta && esAdmin">
+      <!-- Crear ruta -->
+      <button class="btn btn-primary"
+              *ngIf="!creandoRuta && esAdmin"
+              (click)="empezarCrearRuta()">
         ➕ Crear Ruta
       </button>
 
-
-      <!-- SOLO ADMIN puede guardar -->
-      <button class="btn btn-success" 
-              (click)="guardarRuta()" 
-              *ngIf="creandoRuta && esAdmin">
+      <!-- Guardar ruta -->
+      <button class="btn btn-success"
+              *ngIf="creandoRuta && esAdmin"
+              (click)="guardarRuta()">
         ✔ Guardar Ruta
       </button>
 
-      <!-- SOLO ADMIN puede limpiar -->
-      <button class="btn btn-danger" 
-              (click)="limpiarMapa()" 
-              *ngIf="creandoRuta && esAdmin">
+      <!-- Limpiar -->
+      <button class="btn btn-danger"
+              *ngIf="creandoRuta && esAdmin"
+              (click)="limpiarMapa()">
         🗑 Limpiar
       </button>
 
     </div>
+
   </div>
 
-  <!-- Main content area: map + sidebar -->
+  <!-- CONTENIDO PRINCIPAL -->
   <div class="map-content-wrapper">
 
-    <!-- Map section -->
+    <!-- MAPA -->
     <div class="map-section">
       <div id="mapContainer"></div>
     </div>
 
-    <!-- Sidebar -->
+    <!-- SIDEBAR CON LISTA DE RUTAS -->
     <div class="routes-sidebar">
+
       <h3>Rutas Registradas</h3>
 
       <div class="routes-list-container">
-        <div class="ruta-item" *ngFor="let r of rutas">
+
+        <!-- Cada ruta -->
+        <div class="ruta-item"
+             *ngFor="let r of rutas">
+
           <div class="ruta-info">
             <div class="ruta-name">{{ r.nombre_ruta }}</div>
-            <div class="ruta-color" [style.background]="r.color_hex || '#10b981'"></div>
+            <div class="ruta-color"
+                 [style.background]="r.color_hex || '#10b981'">
+            </div>
           </div>
-          <button class="btn-view" (click)="mostrarRuta(r)">Ver</button>
+
+          <div class="ruta-actions">
+            <button class="btn-view"
+                    (click)="mostrarRuta(r)">
+              Ver
+            </button>
+          </div>
+
         </div>
 
-        <div *ngIf="rutas.length === 0" class="no-routes">
+        <!-- Si no hay rutas -->
+        <div class="no-routes" *ngIf="rutas.length === 0">
           No hay rutas registradas aún
         </div>
+
       </div>
+
     </div>
+
   </div>
 
-  <!-- MODAL -->
-  <div class="modal-overlay" *ngIf="mostrarModalNombreRuta" (click)="mostrarModalNombreRuta = false">
-    <div class="modal" (click)="$event.stopPropagation()">
+
+  <!-- MODAL CREAR RUTA -->
+  <div class="modal-overlay"
+       *ngIf="mostrarModalNombreRuta"
+       (click)="mostrarModalNombreRuta = false">
+
+    <div class="modal"
+         (click)="$event.stopPropagation()">
 
       <h3>Crear Nueva Ruta</h3>
 
       <div class="modal-form">
+
+        <!-- Nombre -->
         <div class="form-group">
           <label>Nombre de la ruta</label>
-          <input 
-            type="text" 
-            [(ngModel)]="nombreRuta"
-            placeholder="Ej: Ruta Centro - Zona Norte"
-            class="form-input"
-            autofocus>
+          <input type="text"
+                 [(ngModel)]="nombreRuta"
+                 placeholder="Ej: Calle 6 - Zona Centro"
+                 class="form-input"
+                 autofocus>
         </div>
 
+        <!-- Color -->
         <div class="form-group">
           <label>Color de la ruta</label>
+
           <div class="color-picker-group">
-            <input type="color" [(ngModel)]="rutaColor" class="color-picker">
-            <div class="color-preview" [style.background]="rutaColor"></div>
-            <div class="color-info">
-              <span class="color-value">{{ rutaColor }}</span>
+
+            <input type="color"
+                   class="color-picker"
+                   [(ngModel)]="rutaColor">
+
+            <div class="color-preview"
+                 [style.background]="rutaColor">
             </div>
+
+            <div class="color-info">
+              <span>{{ rutaColor }}</span>
+            </div>
+
           </div>
+
         </div>
+
       </div>
 
+      <!-- Botones -->
       <div class="modal-buttons">
-        <button class="btn btn-cancel" (click)="mostrarModalNombreRuta = false">
+
+        <button class="btn btn-cancel"
+                (click)="mostrarModalNombreRuta = false">
           Cancelar
         </button>
 
-        <!-- SOLO ADMIN puede confirmar -->
-        <button class="btn btn-primary" (click)="confirmarNombreRuta()" *ngIf="esAdmin">
+        <button class="btn btn-primary"
+                (click)="confirmarNombreRuta()"
+                *ngIf="esAdmin">
           Comenzar a Dibujar
         </button>
 
       </div>
 
     </div>
+
   </div>
 
 </div>

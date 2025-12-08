@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
+import { NotificationContainerComponent } from '../../components/notification-container/notification-container.component';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NotificationContainerComponent],
   templateUrl: './registrarse.html',
   styleUrls: ['./registrarse.scss']
 })
@@ -22,42 +24,42 @@ export class Register {
   // NUEVO → rol
   id_rol: number = 3; // usuario por defecto
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService, private notificationService: NotificationService) {}
 
   handleSubmit(): void {
     if (!this.isFormValid()) {
-      alert('Por favor completa todos los campos correctamente');
+      this.notificationService.warning('Por favor completa todos los campos correctamente');
       return;
     }
 
     if (this.password !== this.confirmPassword) {
-      alert('Las contraseñas no coinciden');
+      this.notificationService.warning('Las contraseñas no coinciden');
       return;
     }
 
     if (!this.acceptTerms) {
-      alert('Debes aceptar los términos y condiciones');
+      this.notificationService.warning('Debes aceptar los términos y condiciones');
       return;
     }
 
     this.authService.register(this.email, this.password, this.id_rol).subscribe({
       next: res => {
         if (res.ok) {
-          alert(`¡Registro exitoso! Bienvenido ${this.email}`);
-          this.router.navigate(['/login']);
+          this.notificationService.success('¡Registro exitoso! Redirigiendo...');
+          setTimeout(() => this.router.navigate(['/login']), 2000);
         } else {
-          alert(`Error al registrar: ${res.error}`);
+          this.notificationService.error('Error al registrar. Intenta de nuevo.');
         }
       },
       error: err => {
         console.error('Error en registro:', err);
-        alert('Error al registrar usuario');
+        this.notificationService.error('Error al registrar usuario');
       }
     });
   }
 
   handleGoogleRegister(): void {
-    alert('Registro con Google aún no implementado');
+    this.notificationService.info('Google Sign-Up en desarrollo');
   }
 
   handleBack(): void {

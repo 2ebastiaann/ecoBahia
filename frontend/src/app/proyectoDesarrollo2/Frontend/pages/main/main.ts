@@ -33,10 +33,8 @@ export class MainComponent implements AfterViewInit {
   sidebarOpen = true;
   activeSection = 'inicio';
 
-  // 🔹 para el *ngIf del mapa
   currentRoute = '';
 
-  // instancia del mapa pequeño del dashboard
   private previewMap?: L.Map;
 
   menuItems = [
@@ -58,44 +56,49 @@ export class MainComponent implements AfterViewInit {
   ];
 
   constructor(private router: Router) {
-    // valor inicial
     this.currentRoute = this.router.url;
 
-    // actualizar currentRoute en cada navegación
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.currentRoute = event.urlAfterRedirects;
 
-        // cuando volvemos a /main, recreamos el mapa preview
         if (this.currentRoute === '/main') {
-          setTimeout(() => this.initPreviewMap(), 100);
+          setTimeout(() => this.initPreviewMap(), 50);
         }
       });
   }
 
   ngAfterViewInit(): void {
-    // primera vez que carga /main
     setTimeout(() => {
       if (this.currentRoute === '/main') {
         this.initPreviewMap();
       }
-    }, 100);
+    }, 50);
   }
 
-  // 🔥 crea / recrea el mapa preview dentro de #mainMapPreview
+  // ============================
+  // ⭐  FIX DEFINITIVO LEAFLET
+  // ============================
   private initPreviewMap(): void {
-    const container = document.getElementById('mainMapPreview');
+    const container = document.getElementById('mainMapPreview') as any;
     if (!container) return;
 
-    // si ya había un mapa, destruirlo
+    // 🧨 1. Si ya existe un map, eliminarlo completamente
     if (this.previewMap) {
-      this.previewMap.remove();
+      this.previewMap.off();   // quitar listeners
+      this.previewMap.remove();  
       this.previewMap = undefined;
     }
 
+    // 🧨 2. Leaflet guarda internamente el ID del contenedor → resetearlo
+    if (container._leaflet_id) {
+      container._leaflet_id = null;
+    }
+
+    // 🟢 3. Crear mapa sin errores
     this.previewMap = L.map(container, {
-      center: [3.8773, -77.0277], // Buenaventura
+      center: [3.8773, -77.0277],
       zoom: 13
     });
 

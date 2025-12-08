@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
+import { NotificationContainerComponent } from '../../components/notification-container/notification-container.component';
 import { environment } from '../../../environments/environment';
 
 interface Vehiculo {
@@ -19,7 +21,7 @@ interface Vehiculo {
   standalone: true,
   templateUrl: './vehiculos.html',
   styleUrls: ['./vehiculos.scss'],
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, NotificationContainerComponent]
 })
 export class VehiculosComponent implements OnInit {
 
@@ -40,7 +42,8 @@ export class VehiculosComponent implements OnInit {
     private api: ApiService,
     private fb: FormBuilder,
     private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
+    private notificationService: NotificationService
   ) {
     this.vehicleForm = this.fb.group({
       placa: ['', Validators.required],
@@ -97,8 +100,14 @@ export class VehiculosComponent implements OnInit {
     if (!confirm('¿Eliminar este vehículo?')) return;
 
     this.api.eliminarVehiculo(id).subscribe({
-      next: () => this.loadVehicles(),
-      error: err => console.error(err)
+      next: () => {
+        this.notificationService.success('Vehículo eliminado');
+        this.loadVehicles();
+      },
+      error: err => {
+        console.error(err);
+        this.notificationService.error('Error al eliminar vehículo');
+      }
     });
   }
 
@@ -119,10 +128,14 @@ export class VehiculosComponent implements OnInit {
     if (this.isEditMode && this.selectedVehicle?.id) {
       this.api.actualizarVehiculo(this.selectedVehicle.id, data).subscribe({
         next: () => {
+          this.notificationService.success('Vehículo actualizado');
           this.closeModal();
           this.loadVehicles();
         },
-        error: err => console.error("Error editando:", err)
+        error: err => {
+          console.error("Error editando:", err);
+          this.notificationService.error('Error al actualizar vehículo');
+        }
       });
       return;
     }
@@ -132,12 +145,13 @@ export class VehiculosComponent implements OnInit {
 
     this.api.crearVehiculo(data).subscribe({
       next: () => {
+        this.notificationService.success('Vehículo creado exitosamente');
         this.closeModal();
         this.loadVehicles();
       },
       error: err => {
         console.error("Error creando vehículo:", err);
-        alert("Error creando vehículo. Revisa consola.");
+        this.notificationService.error('Error al crear vehículo');
       }
     });
   }

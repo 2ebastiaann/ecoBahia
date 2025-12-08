@@ -283,31 +283,43 @@ $font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'H
 
 .routes-list-container {
   flex: 1;
-  overflow-y: auto;
+  max-height: calc(100vh - 180px);
+  overflow-y: scroll;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 0.875rem;
-  padding: 0 0.5rem 0 0.25rem; // Más espacio a los lados
+  padding: 0 0.5rem 0 0.25rem;
+  padding-right: 0.75rem;
 
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
   }
 
   &::-webkit-scrollbar-track {
-    background: rgba(15, 23, 42, 0.5);
+    background: rgba(15, 23, 42, 0.8);
     border-radius: 10px;
     margin: 4px 0;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(16, 185, 129, 0.4);
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.5), rgba(16, 185, 129, 0.7));
     border-radius: 10px;
+    border: 2px solid rgba(15, 23, 42, 0.8);
 
     &:hover {
-      background: rgba(16, 185, 129, 0.6);
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.7), rgba(16, 185, 129, 0.9));
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    }
+
+    &:active {
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.8), rgba(16, 185, 129, 1));
     }
   }
+
+  // Para Firefox
+  scrollbar-width: thin;
+  scrollbar-color: rgba(16, 185, 129, 0.6) rgba(15, 23, 42, 0.8);
 }
 
 // Item de ruta - MEJORADO Y CENTRADO
@@ -407,6 +419,38 @@ $font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'H
 
   &:active {
     transform: scale(0.98);
+  }
+}
+
+.ruta-actions {
+  display: flex;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+.btn-delete {
+  padding: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: $font-family;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+
+  &:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.96);
   }
 }
 
