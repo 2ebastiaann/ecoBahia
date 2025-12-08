@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 interface MenuItem {
   id: string;
@@ -11,19 +12,44 @@ interface MenuItem {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule],  // <-- importante
+  imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.scss']
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
+
   @Input() isOpen = true;
   @Input() activeSection = 'inicio';
   @Input() menuItems: MenuItem[] = [];
-  
+
   @Output() sectionChange = new EventEmitter<string>();
   @Output() logoutClick = new EventEmitter<void>();
 
-  constructor(private router: Router) {}
+  usuario: any = null;
+  rolUsuario: string = '';
+
+  constructor(private router: Router, private auth: AuthService) {}
+
+  ngOnInit(): void {
+    this.usuario = this.auth.obtenerUsuario();
+
+    if (this.usuario) {
+      switch (this.usuario.id_rol) {
+        case 1:
+          this.rolUsuario = 'Administrador';
+          break;
+        case 2:
+          this.rolUsuario = 'Conductor';
+          break;
+        case 3:
+          this.rolUsuario = 'Usuario';
+          break;
+        default:
+          this.rolUsuario = 'Invitado';
+          break;
+      }
+    }
+  }
 
   setActiveSection(section: string): void {
     this.sectionChange.emit(section);
@@ -34,18 +60,23 @@ export class SidebarComponent {
   }
 
   navigateTo(item: MenuItem): void {
-    this.setActiveSection(item.id); // marca el item como activo
-    // Navegación simple usando rutas
-    switch(item.id) {
+    this.setActiveSection(item.id);
+
+    switch (item.id) {
+
       case 'vehiculos':
         this.router.navigate(['/main', 'vehiculos']);
         break;
-      case 'main':
-        this.router.navigate(['/main']);
-        break;
+
       case 'rutas':
         this.router.navigate(['/mapa']);
         break;
+
+      case 'main':
+      case 'inicio':
+        this.router.navigate(['/main']);
+        break;
+
       default:
         this.router.navigate(['/main']);
         break;

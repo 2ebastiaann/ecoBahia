@@ -22,16 +22,13 @@
         (logout)="onLogout()">
       </app-header>
 
-      <!-- Dynamic content loaded by the router -->
+      <!-- Dynamic content -->
       <router-outlet></router-outlet>
 
-      <!-- Mapa completo mejorado -->
-      <div class="map-card">
+      <!-- SOLO mostrar este mapa si estamos en /main -->
+      <div class="map-card" *ngIf="currentRoute === '/main'">
         <div class="map-header">
           <h3><i class="icon-map">🗺️</i> Mapa completo de Buenaventura</h3>
-          <div class="map-controls">
-            <!-- Aquí puedes agregar controles si lo necesitas -->
-          </div>
         </div>
 
         <div class="map-wrapper">

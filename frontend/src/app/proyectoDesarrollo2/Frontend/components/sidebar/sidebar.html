@@ -1,5 +1,6 @@
-<!-- sidebar.html -->
 <aside class="sidebar" [class.collapsed]="!isOpen">
+
+  <!-- Logo -->
   <div class="logo-section">
     <div class="logo">EB</div>
     <div class="logo-text">
@@ -8,24 +9,36 @@
     </div>
   </div>
 
+  <!-- MENÚ -->
   <nav class="menu">
     <button 
       *ngFor="let item of menuItems" 
       [class.active]="activeSection === item.id"
       (click)="navigateTo(item)">
+
       <i [class]="item.icon"></i>
       <span>{{ item.label }}</span>
+
     </button>
   </nav>
 
+  <!-- USER INFO -->
   <div class="user-section">
     <div class="user-info">
-      <div class="user-avatar">A</div>
-      <span>Admin</span>
+
+      <!-- Avatar con inicial -->
+      <div class="user-avatar">
+        {{ usuario?.email?.charAt(0)?.toUpperCase() || 'U' }}
+      </div>
+
+      <!-- Rol dinámico -->
+      <span>{{ rolUsuario }}</span>
     </div>
+
     <button class="logout-btn" (click)="logout()">
       <i class="icon-logout"></i>
       Cerrar sesión
     </button>
   </div>
+
 </aside>

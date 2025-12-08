@@ -1,11 +1,11 @@
-import { Component, AfterViewInit, AfterViewChecked } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { LeafletMapService } from '../../services/map.service';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
+import * as L from 'leaflet';
+import { filter } from 'rxjs/operators';
 
 import { SidebarComponent } from '../../components/sidebar/sidebar';
 import { HeaderComponent } from '../../components/header/header';
-import { RouterModule } from '@angular/router';
 
 interface VehiculoActual {
   conductor: string;
@@ -32,18 +32,24 @@ export class MainComponent implements AfterViewInit {
 
   sidebarOpen = true;
   activeSection = 'inicio';
+
+  // 🔹 para el *ngIf del mapa
+  currentRoute = '';
+
+  // instancia del mapa pequeño del dashboard
+  private previewMap?: L.Map;
+
   menuItems = [
     { id: 'inicio', label: 'Inicio', icon: 'icon-home' },
     { id: 'vehiculos', label: 'Vehículos', icon: 'icon-car' },
     { id: 'rutas', label: 'Rutas', icon: 'icon-route' },
-    { id: 'mapa', label: 'Mapa', icon: 'icon-map' }
   ];
 
   vehiculoActual: VehiculoActual = {
-    conductor: "M. García",
+    conductor: 'M. García',
     progreso: 72,
-    placa: "DEF-456",
-    estado: "En ruta"
+    placa: 'DEF-456',
+    estado: 'En ruta'
   };
 
   avisos: Aviso[] = [
@@ -51,18 +57,51 @@ export class MainComponent implements AfterViewInit {
     { id: 2, tipo: 'success', titulo: 'Ruta Este completada exitosamente', tiempo: 'Hace 1 hora' }
   ];
 
-  constructor(private router: Router, private leaflet: LeafletMapService) {}
+  constructor(private router: Router) {
+    // valor inicial
+    this.currentRoute = this.router.url;
 
-  ngAfterViewInit(): void {}
+    // actualizar currentRoute en cada navegación
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.currentRoute = event.urlAfterRedirects;
 
-  // Inicializar el mapa pequeño en la interfaz principal
-  ngAfterViewChecked(): void {
-    // intenta inicializar el mapa preview si el contenedor existe
-    try {
-      this.leaflet.initMap('mainMapPreview');
-    } catch (e) {
-      // ignorar si no está montado aún
+        // cuando volvemos a /main, recreamos el mapa preview
+        if (this.currentRoute === '/main') {
+          setTimeout(() => this.initPreviewMap(), 100);
+        }
+      });
+  }
+
+  ngAfterViewInit(): void {
+    // primera vez que carga /main
+    setTimeout(() => {
+      if (this.currentRoute === '/main') {
+        this.initPreviewMap();
+      }
+    }, 100);
+  }
+
+  // 🔥 crea / recrea el mapa preview dentro de #mainMapPreview
+  private initPreviewMap(): void {
+    const container = document.getElementById('mainMapPreview');
+    if (!container) return;
+
+    // si ya había un mapa, destruirlo
+    if (this.previewMap) {
+      this.previewMap.remove();
+      this.previewMap = undefined;
     }
+
+    this.previewMap = L.map(container, {
+      center: [3.8773, -77.0277], // Buenaventura
+      zoom: 13
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19
+    }).addTo(this.previewMap);
   }
 
   toggleSidebar() {
@@ -72,16 +111,13 @@ export class MainComponent implements AfterViewInit {
   onSectionChange(section: string) {
     this.activeSection = section;
 
-    // Navegación simple según sección
     if (section === 'mapa') {
-      // Ruta dedicada al mapa
       this.router.navigate(['/mapa']);
     } else if (section === 'vehiculos') {
       this.router.navigate(['/main', 'vehiculos']);
     } else if (section === 'inicio' || section === 'main') {
       this.router.navigate(['/main']);
     } else if (section === 'rutas') {
-      // Abrir la vista de rutas/mapa donde se listan y manejan rutas
       this.router.navigate(['/mapa']);
     }
   }
@@ -91,7 +127,6 @@ export class MainComponent implements AfterViewInit {
   }
 
   abrirMapa() {
-    // Abrir el mapa y solicitar creación para que el modal aparezca
     this.router.navigate(['/mapa'], { queryParams: { create: '1' } });
   }
 
